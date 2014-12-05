@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    User List
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <a href="{{ path ('user_create') }}"> Create User </a>
+    {% for user in users %}
+        <div class="user-item">
+            <a href="{{ path ('user_profile', { 'id' : user.id }) }}">{{ user.fullname }}</a>
+        </div>
+    {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <p>Project Issue List</p>
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+        <a href="{{ path('issue_create', { 'project' : project.id }) }}">Create Issue</a>
+    <table>
+    {% if (issues|length > 0) %}
+        {% for issue in issues %}
+            <tr>
+                <td class="project-issue">{{ issue.getPriority().getLabel() }}</td>
+                <td class="project-issue">{{ issue.getStatus().getLabel() }}</td>
+                <td class="project-issue">{{ issue.getTypeLabel() }}</td>
+                <td class="project-issue"><a href="{{ path('issue_profile', { 'issue' : issue.id }) }}">{{ issue.getCode() }}</a></td>
+                <td class="project-issue">{{ issue.getSummary() }}</td>
+            </tr
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td>There is no issue yet for this Project</td>
+        </tr>
+    {% endif %}
+    </table>
+
+{% endblock %}

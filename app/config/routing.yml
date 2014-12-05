@@ -1,0 +1,5 @@
+academic_user:
+    resource: "@AcademicUserBundle/Resources/config/routing.yml"
+
+academic_project:
+    resource: "@AcademicProjectBundle/Resources/config/routing.yml"

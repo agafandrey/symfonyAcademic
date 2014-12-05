@@ -1,0 +1,7 @@
+_login:
+    resource: "@AcademicUserBundle/Controller/IndexController.php"
+    type:     annotation
+
+_create_users:
+    resource: "@AcademicUserBundle/Controller/UserController.php"
+    type:     annotation

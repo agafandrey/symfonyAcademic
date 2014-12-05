@@ -1,0 +1,73 @@
+{% block comments %}
+    <script type="text/javascript" src="{{ asset('bundles/academicproject/js/jquery-2.1.1.min.js') }}"></script>
+    {% if issue.getComments() %}
+        <div class="issue-comments">
+        {% for comment in issue.getComments() %}
+            {{ include('AcademicProjectBundle:Issue/Comment:comment.html.twig', { 'comment': comment }) }}
+        {% endfor %}
+        </div>
+    {% else %}
+        There are no comments yet!
+    {% endif %}
+    <div class="add-comment">
+        <form name="process_comment_new" action="{{ path('process_comment') }}" method="post">
+            <p><b>Enter You Comment:</b></p>
+            <input type="hidden" name="issue" value="{{ issue.getId() }}"/>
+            <p><textarea rows="10" cols="45" name="comment_body"></textarea></p>
+            <p>
+                <button type="submit">Add Comment</button>
+            </p>
+        </form>
+    </div>
+    <script type="text/javascript">
+        function postForm( $form, callback ){
+            var values = {};
+            jQuery.each( $form.serializeArray(), function(i, field) {
+                values[field.name] = field.value;
+            });
+
+            jQuery.ajax({
+                type        : $form.attr( 'method' ),
+                url         : $form.attr( 'action' ),
+                data        : values,
+                success     : function(data) {
+                    callback( data );
+                }
+            });
+        }
+
+        jQuery(document).ready(function(){
+            var forms = [
+                '[ name="process_comment_new"]'
+                {% for comment in issue.getComments() %}
+                    + ',[ name="process_comment_{{ comment.getId() }}"]'
+                {% endfor %}
+            ];
+
+            jQuery( forms.join(',') ).submit( function( e ){
+                e.preventDefault();
+                postForm( jQuery(this), function( response ){
+                    if (response.success){
+                        if (response.new){
+                            jQuery('.issue-comments').append(response.comment_html);
+                            alert(response.comment_id);
+                            forms.push('[ name="process_comment_' + response.comment_id + '"]');
+                        } else {
+                            jQuery('#comment_' + response.comment_id).replaceWith(response.comment_html);
+                        }
+                    } else {
+                        alert ('Error happened adding your comment');
+                    }
+                });
+                return false;
+            });
+
+        });
+
+        function showEditForm(commentId){
+         var commentBlock = jQuery('#comment_' + commentId);
+         commentBlock.find('.comment-body').hide();
+         commentBlock.find('.comment_form').show();
+        }
+    </script>
+{% endblock %}

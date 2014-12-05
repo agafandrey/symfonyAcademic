@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+        <a href="{{ path ('issue_list', { 'project' : project.id }) }}">Project Issues</a>
+        <a href="{{ path ('issue_edit', { 'issue' : issue.id }) }}">Edit Issue</a>
+    {% if (isStory) %}
+        <a href="{{ path ('issue_create', { 'parentissue' : issue.id }) }}">Create Subtask</a>
+    {% endif %}
+    <table>
+        <tr>
+            <td>Priority:</td>
+            <td>{{ issue.priority.getLabel() }}</td>
+        </tr>
+        <tr>
+            <td>Type:</td>
+            <td>{{ issue.getTypeLabel() }}</td>
+        </tr>
+        <tr>
+            <td>Status:</td>
+            <td>{{ issue.status.getLabel() }}</td>
+        </tr>
+        <tr>
+            <td>Resolution:</td>
+            <td>{{ issue.resolution.getLabel() }}</td>
+        </tr>
+        <tr>
+            <td>Created:</td>
+            <td>{{ issue.createdAt|date('m/d/Y g:ia', app.session.get('timezone')) }}</td>
+        </tr>
+        <tr>
+            <td>Updated:</td>
+            <td>{{ issue.updatedAt|date('m/d/Y g:ia', app.session.get('timezone')) }}</td>
+        </tr>
+        <tr>
+            <td>Reporter:</td>
+            <td><a href="{{ path('user_profile', { 'user' : issue.reporter.getId()}) }}">{{ issue.reporter.getFullname() }}</a></td>
+        </tr>
+        <tr>
+            <td>Assignee:</td>
+            <td><a href="{{ path('user_profile', { 'user' : issue.assignee.getId()}) }}">{{ issue.assignee.getFullname() }}</a></td>
+        </tr>
+        <tr>
+            <td>Summary:</td>
+            <td>{{ issue.summary }}</td>
+        </tr>
+        <tr>
+            <td>Description:</td>
+            <td>{{ issue.description }}</td>
+        </tr>
+    </table>
+    {% if (isStory) %}
+        <br/>
+        <p>SUB TASKS</p>
+        <table>
+            {% for subtask in issue.getChildIssues() %}
+                <tr>
+                    <td><a href="{{ path('issue_profile', {'issue' : subtask.getId()}) }}">{{ subtask.getCode() }}</a></td>
+                    <td>{{ subtask.getSummary() }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    <br/>
+    {{ include('AcademicProjectBundle:Issue/Comment:issue_comments.html.twig', { 'issue': issue }) }}
+
+{% endblock %}

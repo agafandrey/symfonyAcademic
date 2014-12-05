@@ -1,0 +1,18 @@
+<div id="comment_{{ comment.getId() }}">
+    <div class="comment-user">
+        <a href="{{ path('user_profile', {'user' : comment.getUser().getId()}) }}">{{ comment.getUser().getFullname() }}</a>
+    </div>
+    <div class="comment-body">
+        {{ comment.getBody() }}
+    </div>
+    <div class="comment_form" style="display:none">
+        <form name="process_comment_{{ comment.getId() }}" action="{{ path('process_comment') }}" method="post">
+            <input type="hidden" name="comment" value="{{ comment.getId() }}"/>
+            <p><textarea rows="10" cols="45" name="comment_body">{{ comment.getBody() }}</textarea></p>
+            <p>
+                <button type="submit">Save Comment</button>
+            </p>
+        </form>
+    </div>
+    <a href="javascript:void(false);" onclick="showEditForm({{ comment.getId() }})">Edit</a>
+</div>

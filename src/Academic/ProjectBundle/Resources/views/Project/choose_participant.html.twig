@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <p>Add Users to {{ project.getName }}</p>
+    <form action="{{ path('assign_participant') }}" method="post">
+        <table>
+            {% for nonParticipant in nonParticipants %}
+                <tr>
+                    <td><input type="checkbox" name="participant[]" value="{{ nonParticipant.getId() }}"></td>
+                    <td>{{ nonParticipant.getFullname() }}</td>
+                    <td>{{ nonParticipant.getEmail() }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <input type="hidden" name="project" value="{{ project.getId() }}"/>
+        <input type="submit" value="Add Participants"/>
+    </form>
+{% endblock %}

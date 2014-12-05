@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    {% if is_edit_granted %}
+        <a href="{{ path ('user_edit', { 'id' : user.id }) }}">Edit Info</a>
+    {% endif %}
+    <table>
+        <tr>
+            <td>&nbsp;</td><td><img src="{{ asset(user.getAvatarWebPath) }}" /></td>
+        </tr>
+        <tr>
+            <td>Name:</td><td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <td>Email:</td><td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td>FullName:</td><td>{{ user.fullname }}</td>
+        </tr>
+        <tr>
+            <td>Role:</td><td>{{ user.role.name }}</td>
+        </tr>
+    </table>
+{% endblock %}

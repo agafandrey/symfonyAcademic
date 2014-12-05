@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <p>{{ project.name }} Project Participants</p>
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    {% if is_edit_granted %}
+        <a href="{{ path ('choose_participant', { 'project' : project.id }) }}">Add Participant</a>
+    {% endif %}
+    <table>
+    {% if (participants|length > 0) %}
+        {% for participant in participants %}
+            <tr>
+                <td><a href="{{ path ('user_profile', { 'id' : participant.id }) }}" > {{ participant.fullname }} </a></td>
+                <td>
+                    {% if is_edit_granted %}
+                        <a href="{{ path ('remove_participant', { 'participant' : participant.id, 'project' : project.id }) }}">Remove Participant</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td>There is no participant in this project yet.</td>
+        </tr>
+    {% endif %}
+    </table>
+{% endblock %}

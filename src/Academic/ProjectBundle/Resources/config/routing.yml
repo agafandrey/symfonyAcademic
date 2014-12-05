@@ -1,0 +1,7 @@
+academic_project:
+    resource: "@AcademicProjectBundle/Controller/ProjectController.php"
+    type:     annotation
+
+academic_project_issue:
+    resource: "@AcademicProjectBundle/Controller/IssueController.php"
+    type:     annotation

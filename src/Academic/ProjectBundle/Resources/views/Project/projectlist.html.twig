@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <p>Project List</p>
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    {% if is_create_granted %}
+        <a href="{{ path ('project_create') }}">Create Project</a>
+    {% endif %}
+    {% if (projects|length > 0) %}
+        {% for project in projects %}
+            <div class="project-item">
+                <a href="{{ path ('project_profile', { 'project' : project.id }) }}">{{ project.name }}</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div>
+            There are no projects yet.
+        </div>
+    {% endif %}
+{% endblock %}

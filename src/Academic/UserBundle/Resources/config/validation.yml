@@ -1,0 +1,6 @@
+# src/Academic/UserBundle/Resources/config/validation.yml
+Academic\UserBundle\Entity\user:
+    properties:
+        file:
+            - File:
+                maxSize: 6000000
