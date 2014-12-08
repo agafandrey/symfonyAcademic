@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flashMessage in app.session.flashbag.get('notice') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <div id="tabs">
+        <ul>
+            <li><a href="#projects">Projects activities</a></li>
+            <li><a href="#issues">Opened Issues</a></li>
+        </ul>
+        <div id="projects">
+            {% for userProject in userProjects %}
+                <div>
+                    <p><a href="{{ path ('project_profile', { 'project' : userProject.getId() }) }}">{{ userProject.getName() }}</a></p>
+                    {% for projectIssue in userProject.getIssues() %}
+                        {% for activity in projectIssue.getActivities() %}
+                            <p>
+                                <a href="{{ path('issue_profile', {'issue' :  projectIssue.getId()}) }}">{{ projectIssue.getCode() }}</a>
+                                {{ activity.getEvent() }} |
+                                <a href="{{ path('user_profile', {'user' :  activity.getUser().getId()}) }}"> {{ activity.getUser().getFullname }} </a> |
+                                {{ activity.getCreatedAt()|date('m/d/Y g:ia', app.session.get('timezone')) }}
+                            </p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        <div id="issues">
+            <table>
+                {% if (userIssues|length > 0) %}
+                    <tr>
+                        <th class="project-issue">Priority</th>
+                        <th class="project-issue">Status</th>
+                        <th class="project-issue">Issue</th>
+                        <th class="project-issue">Issue Code</th>
+                        <th class="project-issue">Issue Summary</th>
+                    </tr>
+                    {% for issue in userIssues %}
+                        <tr>
+                            <td class="project-issue">{{ issue.getPriority().getLabel() }}</td>
+                            <td class="project-issue">{{ issue.getStatus().getLabel() }}</td>
+                            <td class="project-issue">{{ issue.getTypeLabel() }}</td>
+                            <td class="project-issue"><a href="{{ path('issue_profile', { 'issue' : issue.id }) }}">{{ issue.getCode() }}</a></td>
+                            <td class="project-issue">{{ issue.getSummary() }}</td>
+                        </tr
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>There is no issue yet for this Project</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery( "#tabs" ).tabs();
+        });
+    </script>
+{% endblock %}

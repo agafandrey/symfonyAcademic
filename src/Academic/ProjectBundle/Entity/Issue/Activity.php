@@ -6,11 +6,11 @@ namespace Academic\ProjectBundle\Entity\Issue;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="issue_comment")
- * @ORM\Entity()
+ * @ORM\Table(name="issue_activity")
+ * @ORM\Entity(repositoryClass="Academic\ProjectBundle\Entity\Issue\ActivityRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class Comment
+class Activity
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -20,9 +20,9 @@ class Comment
     private $id;
 
     /**
-     * @ORM\Column(name="body", type="string", length=30)
+     * @ORM\Column(name="event", type="string", length=255)
      */
-    private $body;
+    private $event;
 
     /**
      * @ORM\ManyToOne(targetEntity="\Academic\UserBundle\Entity\User")
@@ -31,7 +31,7 @@ class Comment
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="\Academic\ProjectBundle\Entity\Issue", inversedBy="comments")
+     * @ORM\ManyToOne(targetEntity="\Academic\ProjectBundle\Entity\Issue", inversedBy="activities")
      *
      */
     private $issue;
@@ -45,7 +45,7 @@ class Comment
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -68,7 +68,7 @@ class Comment
     /**
      * Get body
      *
-     * @return string 
+     * @return string
      */
     public function getBody()
     {
@@ -91,7 +91,7 @@ class Comment
     /**
      * Get user
      *
-     * @return \Academic\UserBundle\Entity\User 
+     * @return \Academic\UserBundle\Entity\User
      */
     public function getUser()
     {
@@ -114,11 +114,34 @@ class Comment
     /**
      * Get issue
      *
-     * @return \Academic\ProjectBundle\Entity\Issue 
+     * @return \Academic\ProjectBundle\Entity\Issue
      */
     public function getIssue()
     {
         return $this->issue;
+    }
+
+    /**
+     * Set event
+     *
+     * @param string $event
+     * @return Activity
+     */
+    public function setEvent($event)
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
+     * Get event
+     *
+     * @return string 
+     */
+    public function getEvent()
+    {
+        return $this->event;
     }
 
     /**
@@ -133,7 +156,7 @@ class Comment
      * Set created_at
      *
      * @param \DateTime $createdAt
-     * @return Comment
+     * @return Activity
      */
     public function setCreatedAt($createdAt)
     {

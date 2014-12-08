@@ -9,6 +9,13 @@
         <a href="{{ path('issue_create', { 'project' : project.id }) }}">Create Issue</a>
     <table>
     {% if (issues|length > 0) %}
+        <tr>
+            <th class="project-issue">Priority</th>
+            <th class="project-issue">Status</th>
+            <th class="project-issue">Issue</th>
+            <th class="project-issue">Issue Code</th>
+            <th class="project-issue">Issue Summary</th>
+        </tr>
         {% for issue in issues %}
             <tr>
                 <td class="project-issue">{{ issue.getPriority().getLabel() }}</td>

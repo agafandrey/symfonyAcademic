@@ -1,6 +1,10 @@
 <div id="comment_{{ comment.getId() }}">
     <div class="comment-user">
         <a href="{{ path('user_profile', {'user' : comment.getUser().getId()}) }}">{{ comment.getUser().getFullname() }}</a>
+        <a href="javascript:void(false);" onclick="showEditForm({{ comment.getId() }})">Edit</a>
+    </div>
+    <div>
+        Created At: {{ comment.createdAt|date('m/d/Y g:ia', app.session.get('timezone')) }}
     </div>
     <div class="comment-body">
         {{ comment.getBody() }}
@@ -14,5 +18,4 @@
             </p>
         </form>
     </div>
-    <a href="javascript:void(false);" onclick="showEditForm({{ comment.getId() }})">Edit</a>
 </div>

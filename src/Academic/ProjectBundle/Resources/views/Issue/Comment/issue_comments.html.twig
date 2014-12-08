@@ -1,6 +1,6 @@
 {% block comments %}
-    <script type="text/javascript" src="{{ asset('bundles/academicproject/js/jquery-2.1.1.min.js') }}"></script>
-    {% if issue.getComments() %}
+
+    {% if issue.getComments()|length > 0 %}
         <div class="issue-comments">
         {% for comment in issue.getComments() %}
             {{ include('AcademicProjectBundle:Issue/Comment:comment.html.twig', { 'comment': comment }) }}
@@ -43,7 +43,6 @@
                     if (response.success){
                         if (response.new){
                             jQuery('.issue-comments').append(response.comment_html);
-                            alert(response.comment_id);
                             forms.push('[ name="process_comment_' + response.comment_id + '"]');
                             processForms(forms);
                         } else {

@@ -80,17 +80,51 @@ class IssueRepository extends EntityRepository
         return $issue_resolution;
     }
 
-    public function getResolutionClosed()
+    public function getResolutionReopened()
     {
         $qb =$this->getEntityManager()->createQueryBuilder();
         $qb
             ->from('AcademicProjectBundle:IssueResolution', 's')
             ->select('s')
             ->where('s.resolution_code =:resolution_code')
-            ->setParameter('resolution_code', 'CLOSED');
+            ->setParameter('resolution_code', 'REOPENED');
 
         $issue_resolution = $qb->getQuery()->getSingleResult();
         return $issue_resolution;
     }
+
+    public function getCollaboratorIssues($collaboratorId)
+    {
+        $openStatus = $this->getOpenStatus();
+        $inProgressStatus = $this->getInProgressStatus();
+        $qb =$this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->from('AcademicProjectBundle:Issue','i')
+            ->select('i')
+            ->leftJoin('AcademicUserBundle:User', 'u', Join::WITH, 'u MEMBER OF i.collaborators')
+            ->where('u.id = :user AND (i.status = :open_status or i.status = :in_progress_status)')
+            ->setParameter('user', $collaboratorId)
+            ->setParameter('open_status', $openStatus->getId())
+            ->setParameter('in_progress_status', $inProgressStatus->getId());
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAssigneeIssues($assigneeId)
+    {
+        $openStatus = $this->getOpenStatus();
+        $inProgressStatus = $this->getInProgressStatus();
+        $qb =$this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->from('AcademicProjectBundle:Issue','i')
+            ->select('i')
+            ->leftJoin('AcademicUserBundle:User', 'u', Join::WITH, 'u = i.assignee')
+            ->where('u.id = :user AND (i.status = :open_status or i.status = :in_progress_status)')
+            ->setParameter('user', $assigneeId)
+            ->setParameter('open_status', $openStatus->getId())
+            ->setParameter('in_progress_status', $inProgressStatus->getId());
+        return $qb->getQuery()->getResult();
+    }
+
+
 
 }

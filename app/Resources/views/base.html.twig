@@ -3,9 +3,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{% block title %} Academic {% endblock %}</title>
-    {% block stylesheets %}
+    {% block head %}
     {% endblock %}
-
+    {% block stylesheets %}
+        {% stylesheets '../app/Resources/public/css/*' %}
+            <link rel="stylesheet" type="text/css" charset="UTF-8" media="all" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+    {% endblock %}
+    {% block javascripts %}
+        {% javascripts '../app/Resources/public/js/*' %}
+            <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
 </head>
 <body>
 
@@ -13,13 +22,13 @@
     <div id="sidebar">
         {% block sidebar %}
             <ul>
-                <li><a href="{{ path('logout') }}">Log out</a></li>
                 <li><a href="{{ path('index') }}">Home</a></li>
                 <li><a href="{{ path('project_list') }}">Projects</a></li>
                 {% if is_granted('ROLE_ADMIN') %}
                     <li><a href="{{ path('user_list') }}">Users</a></li>
                 {% endif %}
                 <li><a href="{{ path('user_profile') }}">My Profile</a></li>
+                <li><a href="{{ path('logout') }}">Log out</a></li>
             </ul>
         {% endblock %}
     </div>

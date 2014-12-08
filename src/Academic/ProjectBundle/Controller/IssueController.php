@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Academic\ProjectBundle\Entity\Project;
 use Academic\ProjectBundle\Entity\Issue;
 use Academic\ProjectBundle\Entity\Issue\Comment;
+use Academic\ProjectBundle\Entity\Issue\Activity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Academic\ProjectBundle\Entity\IssueStatus;
 use Academic\ProjectBundle\Entity\IssuePriority;
@@ -19,6 +20,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class IssueController extends Controller
 {
+    const CLOSE_ACTION = 'close';
+    const IN_PROGRESS_ACTION = 'in_progress';
+    const RESOLVE_ACTION = 'resolve';
+    const REOPEN_ACTION = 'reopen';
 
     /**
      * @Route("/issuelist", name="issue_list")
@@ -104,6 +109,13 @@ class IssueController extends Controller
                 ->getRepository('AcademicProjectBundle:Issue')
                 ->getResolutionUnResolved();
 
+            $user = $this->get('security.context')->getToken()->getUser();
+
+            $activity = new Activity();
+            $activity->setIssue($issue);
+            $activity->setUser($user);
+            $activity->setEvent('Issue Created');
+
             $issue->setProject($project);
             $issue->setStatus($openedStatus);
             $issue->setResolution($notResolvedResolution);
@@ -111,7 +123,11 @@ class IssueController extends Controller
             $issue->setCode($code);
             $em = $this->getDoctrine()->getManager();
             $em->persist($issue);
+            $em->persist($activity);
             $em->flush();
+
+
+            $this->addCollaborator($issue, $user);
 
             $request->getSession()->getFlashBag()->add(
                 'notice',
@@ -163,17 +179,12 @@ class IssueController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $openedStatus = $this->getDoctrine()
-                ->getRepository('AcademicProjectBundle:Issue')
-                ->getOpenStatus();
-            $notResolvedResolution = $this->getDoctrine()
-                ->getRepository('AcademicProjectBundle:Issue')
-                ->getResolutionUnResolved();
-            $issue->setStatus($openedStatus);
-            $issue->setResolution($notResolvedResolution);
             $em = $this->getDoctrine()->getManager();
             $em->persist($issue);
             $em->flush();
+
+            $user = $this->get('security.context')->getToken()->getUser();
+            $this->addCollaborator($issue, $user);
 
             $request->getSession()->getFlashBag()->add(
                 'notice',
@@ -209,7 +220,11 @@ class IssueController extends Controller
             $isStory = true;
         }
 
-        return array('issue' => $issue, 'project' => $project, 'isStory' => $isStory);
+        return array(
+            'issue' => $issue,
+            'project' => $project,
+            'isStory' => $isStory
+        );
     }
 
     private function getProject(Request $request)
@@ -302,9 +317,16 @@ class IssueController extends Controller
             $comment->setIssue($issue);
             $comment->setUser($user);
             $comment->setBody($commentBody);
+
+            $activity = new Activity();
+            $activity->setIssue($issue);
+            $activity->setUser($user);
+            $activity->setEvent('Comment Added');
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($comment);
             $em->flush();
+            $this->addCollaborator($issue, $user);
             $response['success'] = true;
             $response['comment_id'] = $comment->getId();
             $response['comment_html'] = $this->renderView('AcademicProjectBundle:Issue/Comment:comment.html.twig', array('comment' => $comment));
@@ -313,5 +335,102 @@ class IssueController extends Controller
         }
 
         return new JsonResponse($response);
+    }
+
+    private function addCollaborator($issue, $user)
+    {
+        $collaborators = $issue->getCollaborators();
+
+        if (!$collaborators->contains($user)){
+            $issue->addCollaborator($user);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($issue);
+            $em->flush();
+        }
+
+        return true;
+
+    }
+
+    /**
+     * @Route("/issuestatus", name="issue_status")
+     */
+    public function issuestatusAction(Request $request)
+    {
+        $issue = $this->getIssue($request);
+
+        $project = $issue->getProject();
+
+        if (false === $this->get('security.context')->isGranted('view', $project)) {
+            $request->getSession()->getFlashBag()->add(
+                'notice',
+                'Unauthorized access!'
+            );
+            return $this->redirect($this->generateUrl('project_list'));
+        }
+
+        $statusAction = $request->query->get('action');
+
+        $activityLabel = '';
+        if ($statusAction){
+            switch ($statusAction)
+            {
+                case self::IN_PROGRESS_ACTION :
+                {
+                    $inProgressStatus = $this->getDoctrine()
+                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getInProgressStatus();
+                    $issue->setStatus($inProgressStatus);
+                    $activityLabel = $inProgressStatus->getLabel();
+                    break;
+                }
+                case self::CLOSE_ACTION :
+                {
+                    $closedStatus = $this->getDoctrine()
+                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getClosedStatus();
+                    $issue->setStatus($closedStatus);
+                    $activityLabel = $closedStatus->getLabel();
+                    break;
+                }
+                case self::RESOLVE_ACTION :
+                {
+                    $resolvedResolution = $this->getDoctrine()
+                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getResolutionResolved();
+                    $issue->setResolution($resolvedResolution);
+                    $activityLabel = $resolvedResolution->getLabel();
+                    break;
+                }
+                case self::REOPEN_ACTION :
+                {
+                    $openStatus = $this->getDoctrine()
+                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getOpenStatus();
+                    $issue->setStatus($openStatus);
+                    $reopenedResolution = $this->getDoctrine()
+                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getResolutionReopened();
+                    $issue->setResolution($reopenedResolution);
+                    $activityLabel = $reopenedResolution->getLabel();
+                    break;
+                }
+                default:
+                    return $this->redirect($this->generateUrl('issue_profile', array('issue' => $issue->getId())));
+            }
+
+            $user = $this->get('security.context')->getToken()->getUser();
+            $activity = new Activity();
+            $activity->setIssue($issue);
+            $activity->setUser($user);
+            $activity->setEvent('Issue Status change to ' . $activityLabel );
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($issue);
+            $em->persist($activity);
+            $em->flush();
+        }
+
+        return $this->redirect($this->generateUrl('issue_profile', array('issue' => $issue->getId())));
     }
 }

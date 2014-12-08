@@ -12,7 +12,7 @@ class IndexController extends Controller
 {
     /**
      * @Route("/login", name="login")
-     * @Template
+     * @Template("AcademicUserBundle:Index:login.html.twig")
      */
     public function loginAction(Request $request)
     {
@@ -49,7 +49,7 @@ class IndexController extends Controller
 
     /**
      * @Route("/", name="index")
-     * @Template
+     * @Template("AcademicUserBundle:Index:index.html.twig")
      */
     public function indexAction(Request $request)
     {

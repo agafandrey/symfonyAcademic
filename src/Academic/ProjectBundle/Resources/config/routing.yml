@@ -5,3 +5,11 @@ academic_project:
 academic_project_issue:
     resource: "@AcademicProjectBundle/Controller/IssueController.php"
     type:     annotation
+
+academic_user_index:
+    resource: "@AcademicProjectBundle/Controller/UserBundle/IndexController.php"
+    type:     annotation
+
+academic_user_user:
+    resource: "@AcademicProjectBundle/Controller/UserBundle/UserController.php"
+    type:     annotation

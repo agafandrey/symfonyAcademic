@@ -11,6 +11,18 @@
     {% if (isStory) %}
         <a href="{{ path ('issue_create', { 'parentissue' : issue.id }) }}">Create Subtask</a>
     {% endif %}
+    {% if (issue.getStatus().getStatusCode() != constant('CODE_CLOSED', issue.getStatus())) %}
+        {% if (issue.getStatus().getStatusCode() != constant('CODE_INPROGRESS', issue.getStatus())) %}
+            <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'in_progress' }) }}">Start Progress</a>
+        {% endif %}
+        <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'resolve' }) }}">Resolve Issue</a>
+        <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'close' }) }}">Close Issue</a>
+    {% else %}
+        <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'reopen' }) }}">Reopen</a>
+    {% endif %}
+    {% if (issue.getParentIssue()) %}
+        <p>PARENT ISSUE: <a href="{{ path ('issue_profile', { 'issue' : issue.getParentIssue().getId() }) }}">{{ issue.getParentIssue().getCode() }}</a></p>
+    {% endif %}
     <table>
         <tr>
             <td>Priority:</td>
@@ -53,7 +65,7 @@
             <td>{{ issue.description }}</td>
         </tr>
     </table>
-    {% if (isStory) %}
+    {% if (issue.getChildIssues()|length() > 0) %}
         <br/>
         <p>SUB TASKS</p>
         <table>
@@ -66,6 +78,42 @@
         </table>
     {% endif %}
     <br/>
-    {{ include('AcademicProjectBundle:Issue/Comment:issue_comments.html.twig', { 'issue': issue }) }}
+    <div id="tabs">
+        <ul>
+            <li><a href="#comments">Comments</a></li>
+            <li><a href="#collaborators">Collaborators</a></li>
+            <li><a href="#activities">Activities</a></li>
+        </ul>
+        <div id="comments">
+            <p>
+                {{ include('AcademicProjectBundle:Issue/Comment:issue_comments.html.twig', { 'issue': issue }) }}
+            </p>
+        </div>
+        <div id="collaborators">
+            {% for collaborator in issue.getCollaborators() %}
+                <p>
+                    <a href="{{ path('user_profile', {'user' : collaborator.getId()}) }}">{{ collaborator.getFullname() }}</a>
+                </p>
+            {% endfor %}
+        </div>
+        <div id="activities">
+            {% for activity in issue.getActivities() %}
+                <p>
+                   {{ activity.getEvent() }} |
+                    <a href="{{ path('user_profile', {'user' :  activity.getUser().getId()}) }}"> {{ activity.getUser().getFullname }} </a> |
+                    {{ activity.getCreatedAt()|date('m/d/Y g:ia', app.session.get('timezone')) }}
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery( "#tabs" ).tabs();
+        });
+    </script>
+
 
 {% endblock %}

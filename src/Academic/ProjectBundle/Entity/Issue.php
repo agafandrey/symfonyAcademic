@@ -96,6 +96,12 @@ class Issue
     private $comments;
 
     /**
+     * @ORM\OneToMany(targetEntity="\Academic\ProjectBundle\Entity\Issue\Activity", mappedBy="issue")
+     *
+     */
+    private $activities;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Issue", inversedBy="child_issues")
      *
      */
@@ -575,5 +581,38 @@ class Issue
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * Add activities
+     *
+     * @param \Academic\ProjectBundle\Entity\Issue\Activity $activities
+     * @return Issue
+     */
+    public function addActivity(\Academic\ProjectBundle\Entity\Issue\Activity $activities)
+    {
+        $this->activities[] = $activities;
+
+        return $this;
+    }
+
+    /**
+     * Remove activities
+     *
+     * @param \Academic\ProjectBundle\Entity\Issue\Activity $activities
+     */
+    public function removeActivity(\Academic\ProjectBundle\Entity\Issue\Activity $activities)
+    {
+        $this->activities->removeElement($activities);
+    }
+
+    /**
+     * Get activities
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getActivities()
+    {
+        return $this->activities;
     }
 }

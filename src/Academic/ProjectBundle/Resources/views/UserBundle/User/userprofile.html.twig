@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="flash-notice">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    {% if is_edit_granted %}
+        <a href="{{ path ('user_edit', { 'id' : user.id }) }}">Edit Info</a>
+    {% endif %}
+    <table>
+        <tr>
+            <td>&nbsp;</td><td><img src="{{ asset(user.getAvatarWebPath) }}" /></td>
+        </tr>
+        <tr>
+            <td>Name:</td><td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <td>Email:</td><td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <td>FullName:</td><td>{{ user.fullname }}</td>
+        </tr>
+        <tr>
+            <td>Role:</td><td>{{ user.role.name }}</td>
+        </tr>
+    </table>
+
+    <div id="tabs">
+        <ul>
+            <li><a href="#projects">User Activities</a></li>
+            <li><a href="#issues">Opened Issues</a></li>
+        </ul>
+        <div id="projects">
+            {% for userActivity in userActivities %}
+                    <p>
+                        <a href="{{ path('issue_profile', {'issue' :  userActivity.getIssue().getId()}) }}">{{userActivity.getIssue().getCode() }}</a>
+                        {{ userActivity.getEvent() }} |
+                        <a href="{{ path('user_profile', {'user' :  userActivity.getUser().getId()}) }}"> {{ userActivity.getUser().getFullname }} </a> |
+                        {{ userActivity.getCreatedAt()|date('m/d/Y g:ia', app.session.get('timezone')) }}
+                    </p>
+            {% endfor %}
+        </div>
+        <div id="issues">
+            <table>
+                {% if (userIssues|length > 0) %}
+                    <tr>
+                        <th class="project-issue">Priority</th>
+                        <th class="project-issue">Status</th>
+                        <th class="project-issue">Issue</th>
+                        <th class="project-issue">Issue Code</th>
+                        <th class="project-issue">Issue Summary</th>
+                    </tr>
+                    {% for issue in userIssues %}
+                        <tr>
+                            <td class="project-issue">{{ issue.getPriority().getLabel() }}</td>
+                            <td class="project-issue">{{ issue.getStatus().getLabel() }}</td>
+                            <td class="project-issue">{{ issue.getTypeLabel() }}</td>
+                            <td class="project-issue"><a href="{{ path('issue_profile', { 'issue' : issue.id }) }}">{{ issue.getCode() }}</a></td>
+                            <td class="project-issue">{{ issue.getSummary() }}</td>
+                        </tr
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td>There is no issue yet for this Project</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        jQuery(function() {
+            jQuery( "#tabs" ).tabs();
+        });
+    </script>
+{% endblock %}

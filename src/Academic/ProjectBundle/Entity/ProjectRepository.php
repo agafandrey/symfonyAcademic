@@ -27,4 +27,15 @@ class ProjectRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getUserProjects($userId)
+    {
+        $qb =$this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->from('AcademicProjectBundle:Project','p')
+            ->select('p')
+            ->leftJoin('AcademicUserBundle:User', 'u', Join::WITH, 'u MEMBER OF p.participant')
+            ->where('u.id =:user')->setParameter('user', $userId);
+        return $qb->getQuery()->getResult();
+    }
+
 }

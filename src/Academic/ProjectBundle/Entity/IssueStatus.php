@@ -11,6 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class IssueStatus
 {
+
+    const CODE_CLOSED = 'CLOSED';
+    const CODE_INPROGRESS= 'IN_PROGRESS';
+    const CODE_OPENED = 'OPENED';
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id()

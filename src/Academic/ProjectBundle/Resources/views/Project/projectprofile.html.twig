@@ -19,4 +19,16 @@
             <td>Summary:</td><td>{{ project.summary }}</td>
         </tr>
     </table>
+    <div>
+        {% for issue in project.getIssues() %}
+            {% for activity in issue.getActivities() %}
+                <p>
+                    <a href="{{ path('issue_profile', {'issue' :  issue.getId()}) }}">{{ issue.getCode() }}</a> |
+                    {{ activity.getEvent() }} |
+                    <a href="{{ path('user_profile', {'user' :  activity.getUser().getId()}) }}"> {{ activity.getUser().getFullname }} </a> |
+                    {{ activity.getCreatedAt()|date('m/d/Y g:ia', app.session.get('timezone')) }}
+                </p>
+            {% endfor %}
+        {% endfor %}
+    </div>
 {% endblock %}
