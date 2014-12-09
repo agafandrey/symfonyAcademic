@@ -13,7 +13,7 @@ class UserController extends Controller
 {
     /**
      * @Route("/userlist", name="user_list")
-     * @Template("AcademicUserBundle:user:userlist.html.twig")
+     * @Template("AcademicUserBundle:User:userlist.html.twig")
      */
     public function userlistAction(Request $request)
     {
@@ -92,7 +92,7 @@ class UserController extends Controller
 
     /**
      * @Route("/userprofile", name="user_profile")
-     * @Template("AcademicUserBundle:user:userlist.html.twig")
+     * @Template("AcademicUserBundle:User:userlist.html.twig")
      */
     public function userprofileAction(Request $request)
     {
