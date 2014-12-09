@@ -126,6 +126,7 @@ class IssueController extends Controller
             $em->persist($activity);
             $em->flush();
 
+            $this->sendActivityEmail($activity);
 
             $this->addCollaborator($issue, $user);
 
@@ -325,7 +326,11 @@ class IssueController extends Controller
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($comment);
+            $em->persist($activity);
             $em->flush();
+
+            $this->sendActivityEmail($activity);
+
             $this->addCollaborator($issue, $user);
             $response['success'] = true;
             $response['comment_id'] = $comment->getId();
@@ -429,8 +434,34 @@ class IssueController extends Controller
             $em->persist($issue);
             $em->persist($activity);
             $em->flush();
+
+            $this->sendActivityEmail($activity);
         }
 
         return $this->redirect($this->generateUrl('issue_profile', array('issue' => $issue->getId())));
+    }
+
+    private function sendActivityEmail($activity)
+    {
+        $issue = $activity->getIssue();
+
+        foreach ($issue->getCollaborators() as $user){
+            $message = \Swift_Message::newInstance()
+                ->setSubject('Hello Email')
+                ->setFrom('send@example.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        'AcademicProjectBundle:Issue\Activity\Email\activity_notification.html.twig',
+                        array('event' => $activity->getEvent())
+                    )
+                )
+            ;
+
+            $this->get('mailer')->send($message);
+        }
+
+        return $this;
+
     }
 }
