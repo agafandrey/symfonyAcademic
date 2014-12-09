@@ -66,6 +66,16 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $checkUsername = $user->getUsername();
+            $checkUser = $this->getDoctrine()->getRepository('AcademicUserBundle:User')->loadUserByUsername($checkUsername);
+
+            if ($checkUser->getId()){
+                $request->getSession()->getFlashBag()->add(
+                    'notice',
+                    'The user already exists'
+                );
+                return $this->redirect($this->generateUrl('user_list'));
+            }
 
             $password = $user->getPassword();
 
@@ -92,7 +102,7 @@ class UserController extends Controller
 
     /**
      * @Route("/userprofile", name="user_profile")
-     * @Template("AcademicUserBundle:User:userlist.html.twig")
+     * @Template("AcademicUserBundle:User:userprofile.html.twig")
      */
     public function userprofileAction(Request $request)
     {
@@ -166,6 +176,15 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $checkUsername = $user->getUsername();
+            $checkUser = $this->getDoctrine()->getRepository('AcademicUserBundle:User')->loadUserByUsername($checkUsername);
+            if ($checkUser->getId() && $checkUser->getId() != $user->getId()){
+                $request->getSession()->getFlashBag()->add(
+                    'notice',
+                    'The user already exists'
+                );
+                return $this->redirect($this->generateUrl('user_list'));
+            }
             $user->upload();
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);

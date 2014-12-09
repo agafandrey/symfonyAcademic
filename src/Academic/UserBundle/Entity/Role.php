@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="roles")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Academic\UserBundle\Entity\RoleRepository")
  */
 class Role implements RoleInterface
 {

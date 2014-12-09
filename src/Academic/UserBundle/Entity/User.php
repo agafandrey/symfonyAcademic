@@ -60,7 +60,7 @@ class User implements UserInterface, \Serializable
     private $avatar;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Role", inversedBy="users")
+     * @ORM\ManyToOne(targetEntity="Role")
      *
      */
     private $role;

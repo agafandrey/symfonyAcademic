@@ -23,7 +23,6 @@ class IndexControllerTest extends WebTestCase
         $url = $this->client->getContainer()->get('router')->generate('index', array(), false);
         $this->client->request('GET', $url);
         $result = $this->client->getResponse();
-        //var_dump($result->getStatusCode());die;
         $this->assertEquals(
             200,
             $result->getStatusCode()
