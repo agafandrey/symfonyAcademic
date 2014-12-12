@@ -1,9 +1,13 @@
 <?php
 
-namespace Academic\UserBundle\Tests\Controller;
+namespace Academic\UserBundle\Tests\Functional\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Class IndexControllerTest
+ * @package Academic\UserBundle\Tests\Functional\Controller
+ */
 class IndexControllerTest extends WebTestCase
 {
     private $client;
@@ -16,6 +20,7 @@ class IndexControllerTest extends WebTestCase
                 'PHP_AUTH_PW'   => 'admin',
             )
         );
+        $this->client->followRedirects(true);
     }
 
     public function testIndex()
@@ -34,14 +39,14 @@ class IndexControllerTest extends WebTestCase
         $client = static::createClient();
         $url = $client->getContainer()->get('router')->generate('login', array(), false);
 
-        $crawler = $this->client->request('GET', $url);
-        $this->client->followRedirects(true);
+        $crawler = $client->request('GET', $url);
+        $client->followRedirects(true);
         $form = $crawler->selectButton('login')->form();
         $form['_username'] = 'admin';
         $form['_password'] = 'admin';
-        $this->client->submit($form);
+        $client->submit($form);
 
-        $result = $this->client->getResponse();
+        $result = $client->getResponse();
         $this->assertEquals(
             200,
             $result->getStatusCode()

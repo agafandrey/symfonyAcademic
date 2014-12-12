@@ -29,11 +29,7 @@ class UserRepository extends EntityRepository
         try {
             $user = $q->getQuery()->getSingleResult();
         } catch (NoResultException $e) {
-            $message = sprintf(
-                'Unable to find an active admin AcademicUserBundle:User object identified by "%s".',
-                $username
-            );
-            throw new UsernameNotFoundException($message, 0, $e);
+            $user = new User();
         }
 
         return $user;

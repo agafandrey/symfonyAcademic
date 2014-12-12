@@ -125,6 +125,17 @@ class IssueRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function getIssuePriorityByWeight($weight)
+    {
+        $qb =$this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->from('AcademicProjectBundle:IssuePriority', 'p')
+            ->select('p')
+            ->where('p.weight = :weight')
+            ->setParameter('weight', $weight);
 
+        $issue_priority = $qb->getQuery()->getSingleResult();
+        return $issue_priority;
+    }
 
 }

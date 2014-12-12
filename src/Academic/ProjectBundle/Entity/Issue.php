@@ -148,6 +148,8 @@ class Issue
     {
         $this->collaborators = new \Doctrine\Common\Collections\ArrayCollection();
         $this->child_issues = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->activities = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

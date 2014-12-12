@@ -46,6 +46,7 @@ class Project
     public function __construct()
     {
         $this->participant = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->issues = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**

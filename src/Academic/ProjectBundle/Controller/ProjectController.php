@@ -250,7 +250,7 @@ class ProjectController extends Controller
             $userCount . ' users have been added to ' . $project->getName()
         );
 
-        return $this->redirect($this->generateUrl('project_profile', array('project' => $project->getId())));
+        return $this->redirect($this->generateUrl('project_participant', array('project' => $project->getId())));
     }
 
     private function getProjectToEdit(Request $request)
@@ -260,22 +260,23 @@ class ProjectController extends Controller
         $project = new Project();
         if ($projectId){
             $projectRepo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project');
-            $project = $projectRepo->findOneById($projectId);
-            if(!$project) {
+            $result = $projectRepo->findOneById($projectId);
+            if($result) {
+                if (false === $this->get('security.context')->isGranted('edit', $result)) {
+                    $request->getSession()->getFlashBag()->add(
+                        'notice',
+                        'Unauthorised access!'
+                    );
+
+                } else {
+                    $project = $result;
+                }
+            } else {
                 $request->getSession()->getFlashBag()->add(
                     'notice',
                     'The project is not found'
                 );
             }
-        }
-
-        //validate project permission
-        if (false === $this->get('security.context')->isGranted('edit', $project)) {
-            $request->getSession()->getFlashBag()->add(
-                'notice',
-                'Unauthorised access!'
-            );
-            return $this->redirect($this->generateUrl('project_list'));
         }
 
         return $project;

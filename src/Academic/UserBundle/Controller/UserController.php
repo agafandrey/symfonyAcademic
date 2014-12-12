@@ -64,7 +64,7 @@ class UserController extends Controller
             ->getForm();
 
         $form->handleRequest($request);
-
+        $em = $this->getDoctrine()->getManager();
         if ($form->isValid()) {
             $checkUsername = $user->getUsername();
             $checkUser = $this->getDoctrine()->getRepository('AcademicUserBundle:User')->loadUserByUsername($checkUsername);
@@ -85,10 +85,9 @@ class UserController extends Controller
 
             $user->setPassword($encoder->encodePassword($password, $user->getSalt()));
             $user->upload();
-            $em = $this->getDoctrine()->getManager();
+
             $em->persist($user);
             $em->flush();
-
             $request->getSession()->getFlashBag()->add(
                 'notice',
                 'The user was saved!'

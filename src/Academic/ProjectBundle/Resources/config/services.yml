@@ -1,5 +1,6 @@
 parameters:
 #    academic_project.example.class: Academic\ProjectBundle\Example
+#    test.client.class: Academic\TestBundle\Test\Client
 
 services:
     security.access.project_voter:

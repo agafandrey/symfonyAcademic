@@ -1,9 +1,14 @@
 <?php
 
-namespace Academic\ProjectBundle\Tests\Controller\UserBundle;
+namespace Academic\ProjectBundle\Tests\Functional\Controller\UserBundle;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Class UserControllerTest
+ * @package Academic\ProjectBundle\Tests\Functional\Controller\UserBundle
+ * @dbIsolation
+ */
 class UserControllerTest extends WebTestCase
 {
     private $client;

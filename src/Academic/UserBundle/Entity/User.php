@@ -146,8 +146,8 @@ class User implements UserInterface, \Serializable
             $this->id,
             $this->username,
             $this->password,
-            $this->salt,
             $this->role,
+            $this->salt,
             ) = unserialize($serialized);
     }
 
@@ -378,6 +378,7 @@ class User implements UserInterface, \Serializable
 
         $this->avatar = $avatarName;
         $this->file = null;
+        return $this;
     }
 
     /**

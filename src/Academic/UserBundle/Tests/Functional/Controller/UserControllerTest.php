@@ -1,12 +1,20 @@
 <?php
 
-namespace Academic\UserBundle\Tests\Controller;
+namespace Academic\UserBundle\Tests\Functional\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+/**
+ * Class UserControllerTest
+ * @package Academic\TestBundle\Test\Functional\Controller
+ */
 
 class UserControllerTest extends WebTestCase
 {
-    private $client;
+    protected $client;
+    /** @var EntityManager */
+    protected $connection;
 
     protected function setUp()
     {
@@ -33,6 +41,7 @@ class UserControllerTest extends WebTestCase
     public function testCreateuser()
     {
         $url = $this->client->getContainer()->get('router')->generate('user_create', array(), false);
+
         $fileUrl = $this->client->getContainer()->get('router')->generate('index', array(), false) . 'apple-touch-icon.png';
         $repo = $this->client->getContainer()->get('doctrine')->getRepository('AcademicUserBundle:Role');
         $testRole = $repo->getOperatorRole();
@@ -46,6 +55,7 @@ class UserControllerTest extends WebTestCase
         $form['form[email]'] = 'testuser@mail.com';
         $form['form[role]']->select($testRole->getId());
         $form['form[timezone]']->select('America/Chicago');
+
         $this->client->submit($form);
 
         $result = $this->client->getResponse();
@@ -89,6 +99,5 @@ class UserControllerTest extends WebTestCase
         $result = $this->client->getResponse();
         $this->assertEquals( 200, $result->getStatusCode()
         );
-
     }
 }

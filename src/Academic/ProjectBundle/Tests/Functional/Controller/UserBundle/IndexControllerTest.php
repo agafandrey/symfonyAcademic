@@ -1,9 +1,14 @@
 <?php
 
-namespace Academic\ProjectBundle\Tests\Controller\UserBundle;
+namespace Academic\ProjectBundle\Tests\Functional\Controller\UserBundle;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Class IndexControllerTest
+ * @package Academic\ProjectBundle\Tests\Functional\Controller\UserBundle
+ * @dbIsolation
+ */
 class IndexControllerTest extends WebTestCase
 {
     private $client;
