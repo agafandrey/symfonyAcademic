@@ -149,6 +149,11 @@ class IssueController extends Controller
     public function issueeditAction(Request $request)
     {
         $issue = $this->getIssue($request);
+
+        if(!$issue->getId()){
+            return $this->redirect($this->generateUrl('issue_list'));
+        }
+
         $project = $issue->getProject();
 
         if ($issue->getType() === 'STORY'){
@@ -180,6 +185,7 @@ class IssueController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            var_dump($issue->getId()); var_dump($issue->getProject()->getId());
             $em = $this->getDoctrine()->getManager();
             $em->persist($issue);
             $em->flush();
@@ -270,18 +276,27 @@ class IssueController extends Controller
     private  function getIssue(Request $request)
     {
         $issueId = $request->query->get('issue') ? $request->query->get('issue') : $request->get('issue');
+
+        $issue = new Issue();
         if ($issueId){
-            $repo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Issue');
-            $issue = $repo->findOneById($issueId);
-            if(!$issue ) {
+            $issueRepo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Issue');
+            $result = $issueRepo->findOneById($issueId);
+            if($result) {
+                if (false === $this->get('security.context')->isGranted('edit', $result->getProject())) {
+                    $request->getSession()->getFlashBag()->add(
+                        'notice',
+                        'Unauthorised access!'
+                    );
+
+                } else {
+                    $issue = $result;
+                }
+            } else {
                 $request->getSession()->getFlashBag()->add(
                     'notice',
-                    'The issue was not found!'
+                    'The project is not found'
                 );
-                return $this->redirect($this->generateUrl('project_list'));
             }
-        } else {
-            return $this->redirect($this->generateUrl('project_list'));
         }
 
         return $issue;
