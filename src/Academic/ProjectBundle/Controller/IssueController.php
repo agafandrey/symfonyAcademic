@@ -17,7 +17,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-
 class IssueController extends Controller
 {
     const CLOSE_ACTION = 'close';
@@ -52,11 +51,11 @@ class IssueController extends Controller
 
         $parrentIssueId = $request->query->get('parentissue');
 
-        if ($parrentIssueId){
+        if ($parrentIssueId) {
             $repo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Issue');
             /** @var Issue $parentIssue */
             $parentIssue = $repo->findOneById($parrentIssueId);
-            if(!$parentIssue || $parentIssue->getType() !== 'STORY') {
+            if (!$parentIssue || $parentIssue->getType() !== 'STORY') {
                 $request->getSession()->getFlashBag()->add(
                     'notice',
                     'It\'s impossible to create sub task'
@@ -72,11 +71,8 @@ class IssueController extends Controller
         }
 
         $form = $this->createFormBuilder($issue)
-            ->add('type', 'choice', array(
-                'choices' => $typeOptions
-                )
-            )
-            ->add('summary', 'text',  array('label' => 'Summary'))
+            ->add('type', 'choice', array('choices' => $typeOptions))
+            ->add('summary', 'text', array('label' => 'Summary'))
             ->add('priority', 'entity', array(
                 'class' => 'AcademicProjectBundle:IssuePriority',
                 'property' => 'label',
@@ -87,7 +83,7 @@ class IssueController extends Controller
                 'property' => 'fullname',
                 'label' => 'Assign To'
             ))
-            ->add('description', 'textarea',  array('label' => 'Description'))
+            ->add('description', 'textarea', array('label' => 'Description'))
             ->add('save', 'submit', array('label' => 'Save'))
             ->getForm();
 
@@ -150,24 +146,21 @@ class IssueController extends Controller
     {
         $issue = $this->getIssue($request);
 
-        if(!$issue->getId()){
+        if (!$issue->getId()) {
             return $this->redirect($this->generateUrl('issue_list'));
         }
 
         $project = $issue->getProject();
 
-        if ($issue->getType() === 'STORY'){
+        if ($issue->getType() === 'STORY') {
             $typeOptions = $this->prepareTypeOptions($issue->getAvailableTypesSubtask());
         } else {
             $typeOptions = $this->prepareTypeOptions($issue->getAvailableTypes());
         }
 
         $form = $this->createFormBuilder($issue)
-            ->add('type', 'choice', array(
-                    'choices' => $typeOptions
-                )
-            )
-            ->add('summary', 'text',  array('label' => 'Summary'))
+            ->add('type', 'choice', array('choices' => $typeOptions))
+            ->add('summary', 'text', array('label' => 'Summary'))
             ->add('priority', 'entity', array(
                 'class' => 'AcademicProjectBundle:IssuePriority',
                 'property' => 'label',
@@ -178,14 +171,13 @@ class IssueController extends Controller
                 'property' => 'fullname',
                 'label' => 'Assign To'
             ))
-            ->add('description', 'textarea',  array('label' => 'Description'))
+            ->add('description', 'textarea', array('label' => 'Description'))
             ->add('save', 'submit', array('label' => 'Save'))
             ->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            var_dump($issue->getId()); var_dump($issue->getProject()->getId());
             $em = $this->getDoctrine()->getManager();
             $em->persist($issue);
             $em->flush();
@@ -223,7 +215,7 @@ class IssueController extends Controller
         }
 
         $isStory = false;
-        if ($issue->getType() === 'STORY'){
+        if ($issue->getType() === 'STORY') {
             $isStory = true;
         }
 
@@ -239,10 +231,10 @@ class IssueController extends Controller
         $projectId = $request->query->get('project') ? $request->query->get('project') : $request->get('project');
 
         $project = new Project();
-        if ($projectId){
+        if ($projectId) {
             $projectRepo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project');
             $result = $projectRepo->findOneById($projectId);
-            if($result) {
+            if ($result) {
                 if (false === $this->get('security.context')->isGranted('edit', $result)) {
                     $request->getSession()->getFlashBag()->add(
                         'notice',
@@ -266,22 +258,22 @@ class IssueController extends Controller
     private function prepareTypeOptions(array $types)
     {
         $options = array();
-        foreach($types as $type){
+        foreach ($types as $type) {
             $options[$type['code']] = $type['label'];
         }
 
         return $options;
     }
 
-    private  function getIssue(Request $request)
+    private function getIssue(Request $request)
     {
         $issueId = $request->query->get('issue') ? $request->query->get('issue') : $request->get('issue');
 
         $issue = new Issue();
-        if ($issueId){
+        if ($issueId) {
             $issueRepo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Issue');
             $result = $issueRepo->findOneById($issueId);
-            if($result) {
+            if ($result) {
                 if (false === $this->get('security.context')->isGranted('edit', $result->getProject())) {
                     $request->getSession()->getFlashBag()->add(
                         'notice',
@@ -312,11 +304,11 @@ class IssueController extends Controller
         $commentId = $request->get('comment');
         $commentBody = $request->get('comment_body');
         $response = array();
-        if ($issueId){
+        if ($issueId) {
             $repo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Issue');
             $issue = $repo->findOneById($issueId);
             $comment = new Comment();
-            if(!$issue ) {
+            if (!$issue) {
                 $error = true;
             }
             $response['new'] = true;
@@ -324,7 +316,7 @@ class IssueController extends Controller
             $repo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Issue\Comment');
             $comment = $repo->findOneById($commentId);
             $issue = $comment->getIssue();
-            if(!$comment ) {
+            if (!$comment) {
                 $error = true;
             }
         }
@@ -350,7 +342,10 @@ class IssueController extends Controller
             $this->addCollaborator($issue, $user);
             $response['success'] = true;
             $response['comment_id'] = $comment->getId();
-            $response['comment_html'] = $this->renderView('AcademicProjectBundle:Issue/Comment:comment.html.twig', array('comment' => $comment));
+            $response['comment_html'] = $this->renderView(
+                'AcademicProjectBundle:Issue/Comment:comment.html.twig',
+                array('comment' => $comment)
+            );
         } else {
             $response['success'] = false;
         }
@@ -362,7 +357,7 @@ class IssueController extends Controller
     {
         $collaborators = $issue->getCollaborators();
 
-        if (!$collaborators->contains($user)){
+        if (!$collaborators->contains($user)) {
             $issue->addCollaborator($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($issue);
@@ -393,38 +388,32 @@ class IssueController extends Controller
         $statusAction = $request->query->get('action');
 
         $activityLabel = '';
-        if ($statusAction){
+        if ($statusAction) {
             switch ($statusAction)
             {
-                case self::IN_PROGRESS_ACTION :
-                {
+                case self::IN_PROGRESS_ACTION:
                     $inProgressStatus = $this->getDoctrine()
                         ->getRepository('AcademicProjectBundle:Issue')
                         ->getInProgressStatus();
                     $issue->setStatus($inProgressStatus);
                     $activityLabel = $inProgressStatus->getLabel();
                     break;
-                }
-                case self::CLOSE_ACTION :
-                {
+
+                case self::CLOSE_ACTION:
                     $closedStatus = $this->getDoctrine()
                         ->getRepository('AcademicProjectBundle:Issue')
                         ->getClosedStatus();
                     $issue->setStatus($closedStatus);
                     $activityLabel = $closedStatus->getLabel();
                     break;
-                }
-                case self::RESOLVE_ACTION :
-                {
+                case self::RESOLVE_ACTION:
                     $resolvedResolution = $this->getDoctrine()
                         ->getRepository('AcademicProjectBundle:Issue')
                         ->getResolutionResolved();
                     $issue->setResolution($resolvedResolution);
                     $activityLabel = $resolvedResolution->getLabel();
                     break;
-                }
-                case self::REOPEN_ACTION :
-                {
+                case self::REOPEN_ACTION:
                     $openStatus = $this->getDoctrine()
                         ->getRepository('AcademicProjectBundle:Issue')
                         ->getOpenStatus();
@@ -435,7 +424,7 @@ class IssueController extends Controller
                     $issue->setResolution($reopenedResolution);
                     $activityLabel = $reopenedResolution->getLabel();
                     break;
-                }
+
                 default:
                     return $this->redirect($this->generateUrl('issue_profile', array('issue' => $issue->getId())));
             }
@@ -444,7 +433,7 @@ class IssueController extends Controller
             $activity = new Activity();
             $activity->setIssue($issue);
             $activity->setUser($user);
-            $activity->setEvent('Issue Status change to ' . $activityLabel );
+            $activity->setEvent('Issue Status change to ' . $activityLabel);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($issue);
@@ -460,21 +449,23 @@ class IssueController extends Controller
     private function sendActivityEmail($activity)
     {
         $issue = $activity->getIssue();
+        try {
+            foreach ($issue->getCollaborators() as $user) {
+                $message = \Swift_Message::newInstance()
+                    ->setSubject('Issue Activity Notification Email')
+                    ->setFrom('send@example.com')
+                    ->setTo($user->getEmail())
+                    ->setBody(
+                        $this->renderView(
+                            'AcademicProjectBundle:Issue:Activity\Email\activity_notification.html.twig',
+                            array('activity' => $activity)
+                        )
+                    );
 
-        foreach ($issue->getCollaborators() as $user){
-            $message = \Swift_Message::newInstance()
-                ->setSubject('Hello Email')
-                ->setFrom('send@example.com')
-                ->setTo($user->getEmail())
-                ->setBody(
-                    $this->renderView(
-                        'AcademicProjectBundle:Issue\Activity\Email\activity_notification.html.twig',
-                        array('event' => $activity->getEvent())
-                    )
-                )
-            ;
+                $this->get('mailer')->send($message);
 
-            $this->get('mailer')->send($message);
+            }
+        } catch (\Swift_TransportException $e) {
         }
 
         return $this;

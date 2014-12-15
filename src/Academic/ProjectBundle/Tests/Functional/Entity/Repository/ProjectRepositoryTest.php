@@ -5,6 +5,7 @@ namespace Academic\ProjectBundle\Tests\Functional\Entity\Repository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Academic\UserBundle\Entity\User;
 use Academic\ProjectBundle\Entity\Project;
+
 /**
  * Class ProjectRepositoryTest
  * @package Academic\ProjectBundle\Tests\Functional\Entity\Repository
@@ -26,7 +27,9 @@ class ProjectRepositoryTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $user = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId()
+        );
         $user->setUsername('testName');
         $user->setPassword('testName');
         $user->setFullname('testName');
@@ -57,7 +60,9 @@ class ProjectRepositoryTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $userOne = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId()
+        );
         $userOne->setUsername('testName');
         $userOne->setPassword('testName');
         $userOne->setFullname('testName');
@@ -65,7 +70,9 @@ class ProjectRepositoryTest extends WebTestCase
         $userOne->setEmail('testName@mail.com');
 
         $userTwo = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName2')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName2')->getId()
+        );
         $userTwo->setUsername('testName2');
         $userTwo->setPassword('testName2');
         $userTwo->setFullname('testName2');
@@ -90,10 +97,15 @@ class ProjectRepositoryTest extends WebTestCase
         $this->em->flush();
 
         $this->assertContains($userOne, $project->getParticipant());
-        $this->assertContains($userTwo, $this->em->getRepository('AcademicProjectBundle:Project')->getNonParticipants($project->getId()));
-        $this->assertNotContains($userOne, $this->em->getRepository('AcademicProjectBundle:Project')->getNonParticipants($project->getId()));
+        $this->assertContains(
+            $userTwo,
+            $this->em->getRepository('AcademicProjectBundle:Project')->getNonParticipants($project->getId())
+        );
+        $this->assertNotContains(
+            $userOne,
+            $this->em->getRepository('AcademicProjectBundle:Project')->getNonParticipants($project->getId())
+        );
 
         $this->em->getConnection()->rollback();
     }
-
 }

@@ -52,7 +52,7 @@ class Project
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -75,7 +75,7 @@ class Project
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -98,7 +98,7 @@ class Project
     /**
      * Get summary
      *
-     * @return string 
+     * @return string
      */
     public function getSummary()
     {
@@ -131,7 +131,7 @@ class Project
     /**
      * Get participant
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getParticipant()
     {
@@ -145,9 +145,11 @@ class Project
      */
     public function isParticipant($userId)
     {
-        foreach ($this->participant as $participant){
-            if ($participant->getId() == $userId)
+        foreach ($this->participant as $participant) {
+            if ($participant->getId() == $userId) {
                 return true;
+            }
+
         }
         return false;
     }
@@ -179,7 +181,7 @@ class Project
     /**
      * Get issues
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getIssues()
     {

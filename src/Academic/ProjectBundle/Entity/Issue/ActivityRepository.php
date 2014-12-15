@@ -3,8 +3,6 @@
 namespace Academic\ProjectBundle\Entity\Issue;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NoResultException;
-use Academic\ProjectBundle\Entity\Issue\Activity;
 use Doctrine\ORM\Query\Expr\Join;
 
 /**
@@ -19,7 +17,7 @@ class ActivityRepository extends EntityRepository
     {
         $qb =$this->getEntityManager()->createQueryBuilder();
         $qb
-            ->from('AcademicProjectBundle:Issue\Activity','a')
+            ->from('AcademicProjectBundle:Issue\Activity', 'a')
             ->select('a')
             ->leftJoin('AcademicUserBundle:User', 'u', Join::WITH, 'u = a.user')
             ->where('u.id = :user ')

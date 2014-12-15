@@ -33,7 +33,7 @@ class IssueResolution
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -56,7 +56,7 @@ class IssueResolution
     /**
      * Get resolution_code
      *
-     * @return string 
+     * @return string
      */
     public function getResolutionCode()
     {
@@ -79,7 +79,7 @@ class IssueResolution
     /**
      * Get label
      *
-     * @return string 
+     * @return string
      */
     public function getLabel()
     {

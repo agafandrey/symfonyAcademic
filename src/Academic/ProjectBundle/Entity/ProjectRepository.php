@@ -3,8 +3,6 @@
 namespace Academic\ProjectBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NoResultException;
-use Academic\ProjectBundle\Entity\Project;
 use Doctrine\ORM\Query\Expr\Join;
 
 /**
@@ -31,11 +29,10 @@ class ProjectRepository extends EntityRepository
     {
         $qb =$this->getEntityManager()->createQueryBuilder();
         $qb
-            ->from('AcademicProjectBundle:Project','p')
+            ->from('AcademicProjectBundle:Project', 'p')
             ->select('p')
             ->leftJoin('AcademicUserBundle:User', 'u', Join::WITH, 'u MEMBER OF p.participant')
             ->where('u.id =:user')->setParameter('user', $userId);
         return $qb->getQuery()->getResult();
     }
-
 }

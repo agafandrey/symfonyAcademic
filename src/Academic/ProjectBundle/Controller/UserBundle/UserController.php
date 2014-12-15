@@ -17,7 +17,6 @@ class UserController extends BaseUserController
      */
     public function userprofileAction(Request $request)
     {
-
         $returnArray = parent::userprofileAction($request);
         $user = $returnArray['user'];
 

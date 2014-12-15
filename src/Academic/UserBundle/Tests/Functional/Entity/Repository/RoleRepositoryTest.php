@@ -51,5 +51,4 @@ class RoleRepositoryTest extends WebTestCase
         $role->setRole('ROLE_USER');
         $this->assertSame($role->getRole(), $this->repo->getOperatorRole()->getRole());
     }
-
 }

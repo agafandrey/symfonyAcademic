@@ -69,13 +69,13 @@ class UserVoter implements VoterInterface
                 if (!$currentUser->isPrivate()) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
-            break;
+                break;
 
             case self::EDIT:
                 if ($currentUser->getId() === $user->getId() || $currentUser->getRole()->getRole() === 'ROLE_ADMIN') {
                     return VoterInterface::ACCESS_GRANTED;
                 }
-            break;
+                break;
 
             case self::CREATE:
                 if ($currentUser->getRole()->getRole() === 'ROLE_ADMIN') {

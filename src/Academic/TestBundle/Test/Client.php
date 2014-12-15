@@ -1,5 +1,6 @@
 <?php
 namespace Academic\TestBundle\Test;
+
 use Symfony\Bundle\FrameworkBundle\Client as BaseClient;
 
 class Client extends BaseClient

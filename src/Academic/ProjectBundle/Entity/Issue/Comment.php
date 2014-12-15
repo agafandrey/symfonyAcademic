@@ -45,7 +45,7 @@ class Comment
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -68,7 +68,7 @@ class Comment
     /**
      * Get body
      *
-     * @return string 
+     * @return string
      */
     public function getBody()
     {
@@ -91,7 +91,7 @@ class Comment
     /**
      * Get user
      *
-     * @return \Academic\UserBundle\Entity\User 
+     * @return \Academic\UserBundle\Entity\User
      */
     public function getUser()
     {
@@ -114,7 +114,7 @@ class Comment
     /**
      * Get issue
      *
-     * @return \Academic\ProjectBundle\Entity\Issue 
+     * @return \Academic\ProjectBundle\Entity\Issue
      */
     public function getIssue()
     {
@@ -145,7 +145,7 @@ class Comment
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {

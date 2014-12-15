@@ -11,7 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class IssueStatus
 {
-
     const CODE_CLOSED = 'CLOSED';
     const CODE_INPROGRESS= 'IN_PROGRESS';
     const CODE_OPENED = 'OPENED';
@@ -37,7 +36,7 @@ class IssueStatus
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -60,7 +59,7 @@ class IssueStatus
     /**
      * Get status_code
      *
-     * @return string 
+     * @return string
      */
     public function getStatusCode()
     {
@@ -83,7 +82,7 @@ class IssueStatus
     /**
      * Get label
      *
-     * @return string 
+     * @return string
      */
     public function getLabel()
     {

@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Academic\UserBundle\Entity\User;
 use Academic\ProjectBundle\Entity\Project;
 use Academic\ProjectBundle\Entity\Issue;
+
 /**
  * Class IssueRepositoryTest
  * @package Academic\ProjectBundle\Tests\Functional\Entity\Repository
@@ -69,7 +70,9 @@ class IssueRepositoryTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $user = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId()
+        );
         $user->setUsername('testName');
         $user->setPassword('testName');
         $user->setFullname('testName');
@@ -117,10 +120,11 @@ class IssueRepositoryTest extends WebTestCase
         $this->em->persist($issue);
         $this->em->flush();
 
-
-        $this->assertContains($issue, $this->em->getRepository('AcademicProjectBundle:Issue')->getAssigneeIssues($user->getId()));
+        $this->assertContains(
+            $issue,
+            $this->em->getRepository('AcademicProjectBundle:Issue')->getAssigneeIssues($user->getId())
+        );
 
         $this->em->getConnection()->rollback();
     }
-
 }

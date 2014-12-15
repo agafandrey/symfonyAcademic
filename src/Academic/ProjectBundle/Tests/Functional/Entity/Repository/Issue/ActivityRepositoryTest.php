@@ -7,6 +7,7 @@ use Academic\UserBundle\Entity\User;
 use Academic\ProjectBundle\Entity\Issue\Activity;
 use Academic\ProjectBundle\Entity\Issue;
 use Academic\ProjectBundle\Entity\Project;
+
 /**
  * Class ActivityRepositoryTest
  * @package Academic\ProjectBundle\Tests\Functional\Entity\Repository\Issue
@@ -28,7 +29,9 @@ class ActivityRepositoryTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $user = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId()
+        );
         $user->setUsername('testName');
         $user->setPassword('testName');
         $user->setFullname('testName');
@@ -37,7 +40,9 @@ class ActivityRepositoryTest extends WebTestCase
 
         $this->em->persist($user);
 
-        $this->assertEmpty($this->em->getRepository('AcademicProjectBundle:Issue\Activity')->getUserActivities($user->getId()));
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicProjectBundle:Issue\Activity')->getUserActivities($user->getId())
+        );
 
         $project = new Project();
         $project->setName('Test Project');
@@ -76,10 +81,10 @@ class ActivityRepositoryTest extends WebTestCase
         $this->em->persist($activity);
         $this->em->flush();
         $this->assertNotNull($activity->getId());
-        $loadedActivities = $this->em->getRepository('AcademicProjectBundle:Issue\Activity')->getUserActivities($user->getId());
+        $loadedActivities = $this->em->getRepository('AcademicProjectBundle:Issue\Activity')
+            ->getUserActivities($user->getId());
         $this->assertSame($activity, $loadedActivities[0]);
 
         $this->em->getConnection()->rollback();
     }
-
 }

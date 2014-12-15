@@ -10,10 +10,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-
 class ProjectController extends Controller
 {
-
     /**
      * @Route("/projectlist", name="project_list")
      * @Template
@@ -48,7 +46,7 @@ class ProjectController extends Controller
 
         $form = $this->createFormBuilder($project)
             ->add('name', 'text', array('label' => 'Project Label'))
-            ->add('summary', 'textarea',  array('label' => 'Summary'))
+            ->add('summary', 'textarea', array('label' => 'Summary'))
             ->add('save', 'submit', array('label' => 'Save'))
             ->getForm();
 
@@ -77,13 +75,13 @@ class ProjectController extends Controller
     public function projecteditAction(Request $request)
     {
         $project = $this->getProjectToEdit($request);
-        if(!$project->getId()){
+        if (!$project->getId()) {
             return $this->redirect($this->generateUrl('project_list'));
         }
 
         $form = $this->createFormBuilder($project)
             ->add('name', 'text', array('label' => 'Project Label'))
-            ->add('summary', 'textarea',  array('label' => 'Summary'))
+            ->add('summary', 'textarea', array('label' => 'Summary'))
             ->add('save', 'submit', array('label' => 'Save'))
             ->getForm();
 
@@ -112,10 +110,10 @@ class ProjectController extends Controller
     public function projectprofileAction(Request $request)
     {
         $id = $request->query->get('project');
-        if ($id){
+        if ($id) {
             $repo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project');
             $project = $repo->findOneById($id);
-            if(!$project) {
+            if (!$project) {
                 $request->getSession()->getFlashBag()->add(
                     'error',
                     'The user was not found!'
@@ -145,7 +143,7 @@ class ProjectController extends Controller
     public function projectparticipantsAction(Request $request)
     {
         $project = $this->getProjectToEdit($request);
-        if(!$project->getId()){
+        if (!$project->getId()) {
             return $this->redirect($this->generateUrl('project_list'));
         }
 
@@ -166,14 +164,14 @@ class ProjectController extends Controller
     {
         $participantId = $request->query->get('participant');
         $project = $this->getProjectToEdit($request);
-        if(!$project->getId()){
+        if (!$project->getId()) {
             return $this->redirect($this->generateUrl('project_list'));
         }
 
-        if ($participantId){
+        if ($participantId) {
             $userRepo = $this->getDoctrine()->getRepository('AcademicUserBundle:User');
             $user = $userRepo->findOneById($participantId);
-            if(!$user) {
+            if (!$user) {
                 $request->getSession()->getFlashBag()->add(
                     'notice',
                     'The user is not found'
@@ -204,11 +202,12 @@ class ProjectController extends Controller
     public function chooseparticipantAction(Request $request)
     {
         $project = $this->getProjectToEdit($request);
-        if(!$project){
+        if (!$project) {
             return $this->redirect($this->generateUrl('project_list'));
         }
 
-        $nonParticipants = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project')->getNonParticipants($project->getId());
+        $nonParticipants = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project')
+            ->getNonParticipants($project->getId());
 
         return array('project' => $project, 'nonParticipants' => $nonParticipants);
     }
@@ -222,15 +221,15 @@ class ProjectController extends Controller
     {
         $project = $this->getProjectToEdit($request);
         $participants = $request->get('participant');
-        if (!$project->getId() || !$participants){
+        if (!$project->getId() || !$participants) {
             return $this->redirect($this->generateUrl('project_list'));
         }
 
         $repo = $this->getDoctrine()->getRepository('AcademicUserBundle:User');
         $userCount = 0;
-        foreach ($participants as $participantId){
+        foreach ($participants as $participantId) {
             $user = $repo->findOneById($participantId);
-            if(!$user) {
+            if (!$user) {
                 $request->getSession()->getFlashBag()->add(
                     'notice ',
                     'The user was not found!'
@@ -258,10 +257,10 @@ class ProjectController extends Controller
         $projectId = $request->query->get('project') ? $request->query->get('project') : $request->get('project');
 
         $project = new Project();
-        if ($projectId){
+        if ($projectId) {
             $projectRepo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project');
             $result = $projectRepo->findOneById($projectId);
-            if($result) {
+            if ($result) {
                 if (false === $this->get('security.context')->isGranted('edit', $result)) {
                     $request->getSession()->getFlashBag()->add(
                         'notice',

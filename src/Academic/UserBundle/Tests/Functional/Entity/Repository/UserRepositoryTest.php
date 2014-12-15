@@ -42,5 +42,4 @@ class UserRepositoryTest extends WebTestCase
 
         $this->em->getConnection()->rollback();
     }
-
 }

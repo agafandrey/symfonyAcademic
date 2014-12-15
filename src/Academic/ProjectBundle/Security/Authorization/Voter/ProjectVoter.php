@@ -41,15 +41,6 @@ class ProjectVoter implements VoterInterface
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
-        // check if the voter is used correct, only allow one attribute
-        // this isn't a requirement, it's just one easy way for you to
-        // design your voter
-        if (1 !== count($attributes)) {
-            throw new \InvalidArgumentException(
-                'Only one attribute is allowed for VIEW or EDIT'
-            );
-        }
-
         // set the attribute to check against
         $attribute = $attributes[0];
 
@@ -74,13 +65,13 @@ class ProjectVoter implements VoterInterface
                     || $project->isParticipant($currentUser->getId())) {
                     return VoterInterface::ACCESS_GRANTED;
                 }
-            break;
+                break;
 
             case self::EDIT:
                 if ($userRole === 'ROLE_ADMIN' || $userRole === 'ROLE_MANAGER') {
                     return VoterInterface::ACCESS_GRANTED;
                 }
-            break;
+                break;
 
             case self::CREATE:
                 if ($userRole === 'ROLE_ADMIN' || $userRole === 'ROLE_MANAGER') {

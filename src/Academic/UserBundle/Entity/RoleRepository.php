@@ -3,10 +3,6 @@
 namespace Academic\UserBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NoResultException;
-use Academic\UserBundle\Entity\Role;
-use Doctrine\ORM\Query\Expr\Join;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
 /**
  * RoleRepository

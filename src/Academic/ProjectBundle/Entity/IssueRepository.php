@@ -3,7 +3,6 @@
 namespace Academic\ProjectBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NoResultException;
 use Academic\ProjectBundle\Entity\Issue;
 use Doctrine\ORM\Query\Expr\Join;
 
@@ -99,7 +98,7 @@ class IssueRepository extends EntityRepository
         $inProgressStatus = $this->getInProgressStatus();
         $qb =$this->getEntityManager()->createQueryBuilder();
         $qb
-            ->from('AcademicProjectBundle:Issue','i')
+            ->from('AcademicProjectBundle:Issue', 'i')
             ->select('i')
             ->leftJoin('AcademicUserBundle:User', 'u', Join::WITH, 'u MEMBER OF i.collaborators')
             ->where('u.id = :user AND (i.status = :open_status or i.status = :in_progress_status)')
@@ -115,7 +114,7 @@ class IssueRepository extends EntityRepository
         $inProgressStatus = $this->getInProgressStatus();
         $qb =$this->getEntityManager()->createQueryBuilder();
         $qb
-            ->from('AcademicProjectBundle:Issue','i')
+            ->from('AcademicProjectBundle:Issue', 'i')
             ->select('i')
             ->leftJoin('AcademicUserBundle:User', 'u', Join::WITH, 'u = i.assignee')
             ->where('u.id = :user AND (i.status = :open_status or i.status = :in_progress_status)')
@@ -137,5 +136,4 @@ class IssueRepository extends EntityRepository
         $issue_priority = $qb->getQuery()->getSingleResult();
         return $issue_priority;
     }
-
 }

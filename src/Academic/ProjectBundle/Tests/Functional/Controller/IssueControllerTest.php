@@ -7,7 +7,6 @@ use Academic\ProjectBundle\Entity\Project;
 use Academic\ProjectBundle\Entity\Issue;
 use Academic\UserBundle\Entity\User;
 
-
 /**
  * Class IssueControllerTest
  * @package Academic\ProjectBundle\Tests\Functional\Controller
@@ -21,7 +20,8 @@ class IssueControllerTest extends WebTestCase
     protected function setUp()
     {
         $this->client = static::createClient(
-            array(), array(
+            array(),
+            array(
                 'PHP_AUTH_USER' => 'admin',
                 'PHP_AUTH_PW'   => 'admin',
             )
@@ -42,11 +42,13 @@ class IssueControllerTest extends WebTestCase
 
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('issue_list',
+            ->generate(
+                'issue_list',
                 array(
                     'project' => $preparedData['project']->getId()
                 ),
-                false);
+                false
+            );
         $crawler = $this->client->request('GET', $url);
 
         $this->assertGreaterThan(
@@ -67,25 +69,29 @@ class IssueControllerTest extends WebTestCase
 
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('issue_create',
+            ->generate(
+                'issue_create',
                 array(
                     'project' => $preparedData['project']->getId()
                     ),
-                false);
+                false
+            );
 
         $crawler = $this->client->request('GET', $url);
         $form = $crawler->selectButton('Save')->form();
 
         $form['form[type]'] = 'BUG';
         $form['form[summary]'] = 'test Issue Summary';
-        $form['form[priority]'] = $this->em->getRepository('AcademicProjectBundle:Issue')->getIssuePriorityByWeight(1)->getId();
+        $form['form[priority]'] = $this->em->getRepository('AcademicProjectBundle:Issue')
+            ->getIssuePriorityByWeight(1)
+            ->getId();
         $form['form[assignee]'] = $preparedData['user']->getId();
         $form['form[description]'] = 'test Description';
 
         $this->client->submit($form);
 
         $result = $this->client->getResponse();
-        $this->assertEquals( 200, $result->getStatusCode());
+        $this->assertEquals(200, $result->getStatusCode());
 
         $this->em->getConnection()->rollback();
 
@@ -101,11 +107,13 @@ class IssueControllerTest extends WebTestCase
 
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('issue_profile',
+            ->generate(
+                'issue_profile',
                 array(
                     'issue' => $preparedData['issue']->getId()
                 ),
-                false);
+                false
+            );
         $crawler = $this->client->request('GET', $url);
 
         $this->assertGreaterThan(
@@ -126,25 +134,29 @@ class IssueControllerTest extends WebTestCase
 
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('issue_edit',
+            ->generate(
+                'issue_edit',
                 array(
                     'issue' => $preparedData['issue']->getId()
                 ),
-                false);
+                false
+            );
 
         $crawler = $this->client->request('GET', $url);
         $form = $crawler->selectButton('Save')->form();
 
         $form['form[type]'] = 'BUG';
         $form['form[summary]'] = 'test Issue Summary Edited';
-        $form['form[priority]'] = $this->em->getRepository('AcademicProjectBundle:Issue')->getIssuePriorityByWeight(1)->getId();
+        $form['form[priority]'] = $this->em->getRepository('AcademicProjectBundle:Issue')
+            ->getIssuePriorityByWeight(1)
+            ->getId();
         $form['form[assignee]'] = $preparedData['user']->getId();
         $form['form[description]'] = 'test Description';
 
         $this->client->submit($form);
 
         $result = $this->client->getResponse();
-        $this->assertEquals( 200, $result->getStatusCode());
+        $this->assertEquals(200, $result->getStatusCode());
 
         $this->em->getConnection()->rollback();
 
@@ -160,11 +172,13 @@ class IssueControllerTest extends WebTestCase
 
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('issue_profile',
+            ->generate(
+                'issue_profile',
                 array(
                     'issue' => $preparedData['issue']->getId()
                 ),
-                false);
+                false
+            );
 
         $crawler = $this->client->request('POST', $url);
         $form = $crawler->selectButton('Add Comment')->form();
@@ -174,11 +188,10 @@ class IssueControllerTest extends WebTestCase
         $this->client->submit($form);
 
         $result = $this->client->getResponse();
-        $this->assertEquals( 200, $result->getStatusCode());
-        $this->assertContains( 'success', $result->getContent());
+        $this->assertEquals(200, $result->getStatusCode());
+        $this->assertContains('success', $result->getContent());
 
         $this->em->getConnection()->rollback();
-
     }
 
     public function testIssueStatus()
@@ -192,16 +205,18 @@ class IssueControllerTest extends WebTestCase
 
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('issue_status',
+            ->generate(
+                'issue_status',
                 array(
                     'issue' => $preparedData['issue']->getId(),
                     'action' => 'close'
                 ),
-                false);
+                false
+            );
         $this->client->request('GET', $url);
 
         $result = $this->client->getResponse();
-        $this->assertEquals( 200, $result->getStatusCode());
+        $this->assertEquals(200, $result->getStatusCode());
 
         $this->em->getConnection()->rollback();
     }
@@ -244,7 +259,4 @@ class IssueControllerTest extends WebTestCase
         return array('user' => $user, 'project' => $project, 'issue' => $issue);
 
     }
-
-
-
 }

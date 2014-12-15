@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 /**
 * Academic\UserBundle\Entity\User
 *
@@ -162,7 +163,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -212,7 +213,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -235,7 +236,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get fullname
      *
-     * @return string 
+     * @return string
      */
     public function getFullname()
     {
@@ -258,7 +259,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get avatar
      *
-     * @return string 
+     * @return string
      */
     public function getAvatar()
     {
@@ -281,7 +282,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get role
      *
-     * @return string 
+     * @return string
      */
     public function getRole()
     {
@@ -304,7 +305,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get isActive
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsActive()
     {
@@ -397,7 +398,7 @@ class User implements UserInterface, \Serializable
     /**
      * Get timezone
      *
-     * @return string 
+     * @return string
      */
     public function getTimezone()
     {

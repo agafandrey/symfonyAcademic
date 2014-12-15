@@ -33,7 +33,7 @@ class IssuePriority
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -56,7 +56,7 @@ class IssuePriority
     /**
      * Get weight
      *
-     * @return integer 
+     * @return integer
      */
     public function getWeight()
     {
@@ -79,7 +79,7 @@ class IssuePriority
     /**
      * Get label
      *
-     * @return string 
+     * @return string
      */
     public function getLabel()
     {

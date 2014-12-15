@@ -4,7 +4,6 @@ namespace src\Academic\UserBundle\Tests\Unit\Entity;
 
 use Academic\UserBundle\Entity\User;
 use Academic\UserBundle\Entity\Role;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UserTest extends \PHPUnit_Framework_TestCase
 {

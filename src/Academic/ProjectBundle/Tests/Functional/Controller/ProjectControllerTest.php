@@ -19,7 +19,8 @@ class ProjectControllerTest extends WebTestCase
     protected function setUp()
     {
         $this->client = static::createClient(
-            array(), array(
+            array(),
+            array(
                 'PHP_AUTH_USER' => 'admin',
                 'PHP_AUTH_PW'   => 'admin',
             )
@@ -52,7 +53,7 @@ class ProjectControllerTest extends WebTestCase
         $this->client->submit($form);
 
         $result = $this->client->getResponse();
-        $this->assertEquals( 200, $result->getStatusCode());
+        $this->assertEquals(200, $result->getStatusCode());
 
     }
 
@@ -68,7 +69,8 @@ class ProjectControllerTest extends WebTestCase
 
         $this->assertNotNull($project->getId());
 
-        $url = $this->client->getContainer()->get('router')->generate('project_profile', array('id' => $project->getId()), false);
+        $url = $this->client->getContainer()->get('router')
+            ->generate('project_profile', array('id' => $project->getId()), false);
         $this->client->request('GET', $url);
         $result = $this->client->getResponse();
         $this->assertEquals(
@@ -91,7 +93,8 @@ class ProjectControllerTest extends WebTestCase
 
         $this->assertNotNull($project->getId());
 
-        $url = $this->client->getContainer()->get('router')->generate('project_edit', array('project' => $project->getId()), false);
+        $url = $this->client->getContainer()->get('router')
+            ->generate('project_edit', array('project' => $project->getId()), false);
         $crawler = $this->client->request('GET', $url);
 
         $form = $crawler->selectButton('Save')->form();
@@ -99,7 +102,7 @@ class ProjectControllerTest extends WebTestCase
         $form['form[summary]'] = 'test Project Summary';
         $this->client->submit($form);
         $result = $this->client->getResponse();
-        $this->assertEquals( 200, $result->getStatusCode());
+        $this->assertEquals(200, $result->getStatusCode());
 
         $this->em->getConnection()->rollback();
     }
@@ -109,7 +112,11 @@ class ProjectControllerTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $user = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')
+            ->loadUserByUsername('testName')
+            ->getId()
+        );
         $user->setUsername('testName');
         $user->setPassword('testName');
         $user->setFullname('testName');
@@ -127,7 +134,8 @@ class ProjectControllerTest extends WebTestCase
         $this->assertNotNull($user->getId());
         $this->assertNotNull($project->getId());
 
-        $url = $this->client->getContainer()->get('router')->generate('project_participant', array('project' => $project->getId()), false);
+        $url = $this->client->getContainer()->get('router')
+            ->generate('project_participant', array('project' => $project->getId()), false);
         $crawler = $this->client->request('GET', $url);
         $result = $this->client->getResponse();
         $this->assertEquals(
@@ -148,7 +156,11 @@ class ProjectControllerTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $user = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')
+                ->loadUserByUsername('testName')
+                ->getId()
+        );
         $user->setUsername('testName');
         $user->setPassword('testName');
         $user->setFullname('testName');
@@ -171,12 +183,14 @@ class ProjectControllerTest extends WebTestCase
 
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('remove_participant',
+            ->generate(
+                'remove_participant',
                 array(
                     'participant'   => $user->getId(),
                     'project'       => $project->getId()
                 ),
-                false);
+                false
+            );
         $this->client->request('GET', $url);
         $result = $this->client->getResponse();
         $this->assertEquals(
@@ -194,7 +208,11 @@ class ProjectControllerTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $user = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')
+            ->loadUserByUsername('testName')
+                ->getId()
+        );
         $user->setUsername('testName');
         $user->setPassword('testName');
         $user->setFullname('testName');
@@ -213,8 +231,8 @@ class ProjectControllerTest extends WebTestCase
 
         $this->assertNotContains($user, $project->getParticipant());
 
-
-        $url = $this->client->getContainer()->get('router')->generate('choose_participant', array('project' => $project->getId()), false);
+        $url = $this->client->getContainer()->get('router')
+            ->generate('choose_participant', array('project' => $project->getId()), false);
         $crawler = $this->client->request('GET', $url);
         $result = $this->client->getResponse();
         $this->assertEquals(
@@ -235,7 +253,11 @@ class ProjectControllerTest extends WebTestCase
         $this->em->getConnection()->beginTransaction();
 
         $user = new User();
-        $this->assertEmpty($this->em->getRepository('AcademicUserBundle:User')->loadUserByUsername('testName')->getId());
+        $this->assertEmpty(
+            $this->em->getRepository('AcademicUserBundle:User')
+                ->loadUserByUsername('testName')
+                ->getId()
+        );
         $user->setUsername('testName');
         $user->setPassword('testName');
         $user->setFullname('testName');
@@ -254,15 +276,16 @@ class ProjectControllerTest extends WebTestCase
 
         $this->assertNotContains($user, $project->getParticipant());
 
-
         $url = $this->client->getContainer()
             ->get('router')
-            ->generate('assign_participant',
+            ->generate(
+                'assign_participant',
                 array(
                     'participant[]'   => $user->getId(),
                     'project'       => $project->getId()
                 ),
-                false);
+                false
+            );
         $this->client->request('GET', $url);
         $result = $this->client->getResponse();
         $this->assertEquals(
@@ -274,5 +297,4 @@ class ProjectControllerTest extends WebTestCase
 
         $this->em->getConnection()->rollback();
     }
-
 }

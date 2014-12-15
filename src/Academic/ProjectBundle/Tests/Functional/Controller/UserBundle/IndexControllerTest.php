@@ -16,7 +16,8 @@ class IndexControllerTest extends WebTestCase
     protected function setUp()
     {
         $this->client = static::createClient(
-            array(), array(
+            array(),
+            array(
                 'PHP_AUTH_USER' => 'admin',
                 'PHP_AUTH_PW'   => 'admin',
             )

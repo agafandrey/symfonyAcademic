@@ -51,10 +51,10 @@ class UserController extends Controller
 
         $form = $this->createFormBuilder($user)
             ->add('username', 'text', array('label' => 'User Name'))
-            ->add('password', 'text',  array('label' => 'Password'))
-            ->add('fullname', 'text',  array('label' => 'Full Name'))
-            ->add('file', 'file',  array('label' => 'Avatar', 'required' => false))
-            ->add('email', 'email',  array('label' => 'Email'))
+            ->add('password', 'text', array('label' => 'Password'))
+            ->add('fullname', 'text', array('label' => 'Full Name'))
+            ->add('file', 'file', array('label' => 'Avatar', 'required' => false))
+            ->add('email', 'email', array('label' => 'Email'))
             ->add('role', 'entity', array(
                 'class' => 'AcademicUserBundle:Role',
                 'property' => 'name',
@@ -67,9 +67,10 @@ class UserController extends Controller
         $em = $this->getDoctrine()->getManager();
         if ($form->isValid()) {
             $checkUsername = $user->getUsername();
-            $checkUser = $this->getDoctrine()->getRepository('AcademicUserBundle:User')->loadUserByUsername($checkUsername);
+            $checkUser = $this->getDoctrine()->getRepository('AcademicUserBundle:User')
+                ->loadUserByUsername($checkUsername);
 
-            if ($checkUser->getId()){
+            if ($checkUser->getId()) {
                 $request->getSession()->getFlashBag()->add(
                     'notice',
                     'The user already exists'
@@ -106,10 +107,10 @@ class UserController extends Controller
     public function userprofileAction(Request $request)
     {
         $id = $request->query->get('id');
-        if ($id){
+        if ($id) {
             $repo = $this->getDoctrine()->getRepository('AcademicUserBundle:User');
             $user = $repo->findOneById($id);
-            if(!$user) {
+            if (!$user) {
                 $request->getSession()->getFlashBag()->add(
                     'error',
                     'The user was not found!'
@@ -148,7 +149,7 @@ class UserController extends Controller
         if ($userId) {
             $repo = $this->getDoctrine()->getRepository('AcademicUserBundle:User');
             $user = $repo->findOneById($userId);
-            if(!$user) {
+            if (!$user) {
                 $request->getSession()->getFlashBag()->add(
                     'notice',
                     'The user was not found!'
@@ -161,9 +162,9 @@ class UserController extends Controller
 
         $form = $this->createFormBuilder($user)
             ->add('username', 'text', array('label' => 'User Name'))
-            ->add('fullname', 'text',  array('label' => 'Full Name'))
-            ->add('file', 'file',  array('label' => 'Avatar', 'required' => false))
-            ->add('email', 'email',  array('label' => 'Email'))
+            ->add('fullname', 'text', array('label' => 'Full Name'))
+            ->add('file', 'file', array('label' => 'Avatar', 'required' => false))
+            ->add('email', 'email', array('label' => 'Email'))
             ->add('role', 'entity', array(
                 'class' => 'AcademicUserBundle:Role',
                 'property' => 'name',
@@ -176,8 +177,9 @@ class UserController extends Controller
 
         if ($form->isValid()) {
             $checkUsername = $user->getUsername();
-            $checkUser = $this->getDoctrine()->getRepository('AcademicUserBundle:User')->loadUserByUsername($checkUsername);
-            if ($checkUser->getId() && $checkUser->getId() != $user->getId()){
+            $checkUser = $this->getDoctrine()->getRepository('AcademicUserBundle:User')
+                ->loadUserByUsername($checkUsername);
+            if ($checkUser->getId() && $checkUser->getId() != $user->getId()) {
                 $request->getSession()->getFlashBag()->add(
                     'notice',
                     'The user already exists'

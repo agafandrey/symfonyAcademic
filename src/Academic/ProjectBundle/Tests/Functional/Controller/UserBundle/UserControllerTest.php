@@ -16,7 +16,8 @@ class UserControllerTest extends WebTestCase
     protected function setUp()
     {
         $this->client = static::createClient(
-            array(), array(
+            array(),
+            array(
                 'PHP_AUTH_USER' => 'admin',
                 'PHP_AUTH_PW'   => 'admin',
             )
@@ -28,7 +29,9 @@ class UserControllerTest extends WebTestCase
     {
         $repo = $this->client->getContainer()->get('doctrine')->getRepository('AcademicUserBundle:User');
         $testUser = $repo->loadUserByUsername('admin');
-        $url = $this->client->getContainer()->get('router')->generate('user_profile', array('id' => $testUser->getId()), false);
+        $url = $this->client->getContainer()
+            ->get('router')
+            ->generate('user_profile', array('id' => $testUser->getId()), false);
         $this->client->request('GET', $url);
         $result = $this->client->getResponse();
         $this->assertEquals(
@@ -36,5 +39,4 @@ class UserControllerTest extends WebTestCase
             $result->getStatusCode()
         );
     }
-
 }

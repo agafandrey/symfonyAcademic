@@ -114,7 +114,7 @@ class Activity
     /**
      * Get event
      *
-     * @return string 
+     * @return string
      */
     public function getEvent()
     {
@@ -145,7 +145,7 @@ class Activity
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {

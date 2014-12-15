@@ -68,6 +68,4 @@ class IndexController extends Controller
     {
         // The security layer will intercept this request
     }
-
-
 }
