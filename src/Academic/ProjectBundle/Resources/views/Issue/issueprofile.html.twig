@@ -54,7 +54,13 @@
         </tr>
         <tr>
             <td>Assignee:</td>
-            <td><a href="{{ path('user_profile', { 'user' : issue.assignee.getId()}) }}">{{ issue.assignee.getFullname() }}</a></td>
+            <td>
+                {% if (issue.getAssignee) %}
+                    <a href="{{ path('user_profile', { 'user' : issue.assignee.getId()}) }}">{{ issue.assignee.getFullname() }}</a>
+                {% else %}
+                    Not Assigned Yet
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <td>Summary:</td>
