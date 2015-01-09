@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'AcademicCoreBundle::layout.html.twig' %}
 {% block body %}
     <p>{{ project.name }} Project Participants</p>
     {% for flashMessage in app.session.flashbag.get('notice') %}

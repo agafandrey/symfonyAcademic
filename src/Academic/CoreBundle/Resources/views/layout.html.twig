@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% block title %} Academic {% endblock %}</title>
+    {% block javascripts %}
+        {% javascripts '@AcademicCoreBundle/Resources/public/js/*' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endblock %}
+    {% block stylesheets %}
+        {% stylesheets 'bundles/academiccore/css/*' filter='cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+        {% endstylesheets %}
+    {% endblock %}
+</head>
+<body>
+
+{% if app.user %}
+    <div id="sidebar">
+        {% block sidebar %}
+            <ul>
+                <li><a href="{{ path('index') }}">Home</a></li>
+                <li><a href="{{ path('project_list') }}">Projects</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('user_list') }}">Users</a></li>
+                {% endif %}
+                <li><a href="{{ path('user_profile') }}">My Profile</a></li>
+                <li><a href="{{ path('logout') }}">Log out</a></li>
+            </ul>
+        {% endblock %}
+    </div>
+{% endif %}
+
+<div id="content">
+    {% block body %}{% endblock %}
+</div>
+</body>
+</html>
+
