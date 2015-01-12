@@ -7,10 +7,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="issue_resolution")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Academic\ProjectBundle\Entity\IssueResolutionRepository")
  */
 class IssueResolution
 {
+    const CODE_RESOLVED = 'RESOLVED';
+    const CODE_UNRESOLVED= 'UNRESOLVED';
+    const CODE_REOPENED = 'REOPENED';
+
     /**
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id()
@@ -84,5 +88,19 @@ class IssueResolution
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * Is resolved status
+     *
+     * @return bool
+     */
+    public function isResolvedResolution()
+    {
+        if ($this->getResolutionCode() === self::CODE_RESOLVED) {
+            return true;
+        }
+
+        return false;
     }
 }

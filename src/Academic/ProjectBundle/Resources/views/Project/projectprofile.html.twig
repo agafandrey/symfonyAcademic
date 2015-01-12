@@ -8,9 +8,9 @@
     {% endfor %}
     {% if is_edit_granted %}
         <a href="{{ path ('project_edit', { 'project' : project.id }) }}">Edit Info</a>
-        <a href="{{ path ('project_participant', { 'project' : project.id }) }}">Project Participants</a>
-        <a href="{{ path ('issue_list', { 'project' : project.id }) }}">Issues</a>
     {% endif %}
+    <a href="{{ path ('project_participant', { 'project' : project.id }) }}">Project Participants</a>
+    <a href="{{ path ('issue_list', { 'project' : project.id }) }}">Issues</a>
     <table>
         <tr>
             <td>Project Label:</td><td>{{ project.name }}</td>

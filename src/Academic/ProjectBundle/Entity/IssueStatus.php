@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="issue_status")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Academic\ProjectBundle\Entity\IssueStatusRepository")
  */
 class IssueStatus
 {
@@ -87,5 +87,33 @@ class IssueStatus
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * Is in progress
+     *
+     * @return bool
+     */
+    public function isInProgressStatus()
+    {
+        if ($this->getStatusCode() === self::CODE_INPROGRESS) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Is closed
+     *
+     * @return bool
+     */
+    public function isClosedStatus()
+    {
+        if ($this->getStatusCode() === self::CODE_CLOSED) {
+            return true;
+        }
+
+        return false;
     }
 }

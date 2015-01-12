@@ -15,7 +15,7 @@
             <input type="hidden" name="issue" value="{{ issue.getId() }}"/>
             <p><textarea rows="10" cols="45" name="comment_body"></textarea></p>
             <p>
-                <button type="submit">Add Comment</button>
+                <button type="submit" class="save-button">Add Comment</button>
             </p>
         </form>
     </div>
@@ -39,6 +39,8 @@
         function processForms(forms){
             jQuery( forms.join(',') ).submit( function( e ){
                 e.preventDefault();
+                var saveButton = jQuery(e.target).find('.save-button');
+                saveButton.prop("disabled", true);
                 postForm( jQuery(this), function( response ){
                     if (response.success){
                         if (response.new){
@@ -51,6 +53,7 @@
                     } else {
                         alert ('Error happened adding your comment');
                     }
+                    saveButton.prop("disabled", false);
                 });
                 return false;
             });

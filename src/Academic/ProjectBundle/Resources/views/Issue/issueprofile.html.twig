@@ -11,15 +11,22 @@
     {% if (isStory) %}
         <a href="{{ path ('issue_create', { 'parentissue' : issue.id }) }}">Create Subtask</a>
     {% endif %}
-    {% if (issue.getStatus().getStatusCode() != constant('CODE_CLOSED', issue.getStatus())) %}
-        {% if (issue.getStatus().getStatusCode() != constant('CODE_INPROGRESS', issue.getStatus())) %}
-            <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'in_progress' }) }}">Start Progress</a>
-        {% endif %}
+
+    {% if not issue.getResolution().isResolvedResolution() %}
         <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'resolve' }) }}">Resolve Issue</a>
-        <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'close' }) }}">Close Issue</a>
+        {% if not issue.getStatus().isInProgressStatus() %}
+            <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'in_progress' }) }}">Start Progress</a>
+        {% else %}
+            <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'stop_progress' }) }}">Stop Progress</a>
+        {% endif %}
     {% else %}
         <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'reopen' }) }}">Reopen</a>
     {% endif %}
+
+    {% if not issue.getStatus().isClosedStatus() %}
+        <a href="{{ path ('issue_status', { 'issue' : issue.id , 'action' : 'close' }) }}">Close Issue</a>
+    {% endif %}
+
     {% if (issue.getParentIssue()) %}
         <p>PARENT ISSUE: <a href="{{ path ('issue_profile', { 'issue' : issue.getParentIssue().getId() }) }}">{{ issue.getParentIssue().getCode() }}</a></p>
     {% endif %}

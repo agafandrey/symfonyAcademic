@@ -106,7 +106,7 @@ class UserController extends Controller
      */
     public function userprofileAction(Request $request)
     {
-        $id = $request->query->get('id');
+        $id = $request->query->get('user');
         if ($id) {
             $repo = $this->getDoctrine()->getRepository('AcademicUserBundle:User');
             $user = $repo->findOneById($id);

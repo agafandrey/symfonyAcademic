@@ -21,6 +21,7 @@ class IssueController extends Controller
 {
     const CLOSE_ACTION = 'close';
     const IN_PROGRESS_ACTION = 'in_progress';
+    const STOP_PROGRESS_ACTION = 'stop_progress';
     const RESOLVE_ACTION = 'resolve';
     const REOPEN_ACTION = 'reopen';
 
@@ -125,6 +126,7 @@ class IssueController extends Controller
             $this->sendActivityEmail($activity);
 
             $this->addCollaborator($issue, $user);
+            $this->addCollaborator($issue, $issue->getAssignee());
 
             $request->getSession()->getFlashBag()->add(
                 'notice',
@@ -184,6 +186,7 @@ class IssueController extends Controller
 
             $user = $this->get('security.context')->getToken()->getUser();
             $this->addCollaborator($issue, $user);
+            $this->addCollaborator($issue, $issue->getAssignee());
 
             $request->getSession()->getFlashBag()->add(
                 'notice',
@@ -235,7 +238,7 @@ class IssueController extends Controller
             $projectRepo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project');
             $result = $projectRepo->findOneById($projectId);
             if ($result) {
-                if (false === $this->get('security.context')->isGranted('edit', $result)) {
+                if (false === $this->get('security.context')->isGranted('view', $result)) {
                     $request->getSession()->getFlashBag()->add(
                         'notice',
                         'Unauthorised access!'
@@ -274,7 +277,7 @@ class IssueController extends Controller
             $issueRepo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Issue');
             $result = $issueRepo->findOneById($issueId);
             if ($result) {
-                if (false === $this->get('security.context')->isGranted('edit', $result->getProject())) {
+                if (false === $this->get('security.context')->isGranted('view', $result->getProject())) {
                     $request->getSession()->getFlashBag()->add(
                         'notice',
                         'Unauthorised access!'
@@ -393,15 +396,23 @@ class IssueController extends Controller
             {
                 case self::IN_PROGRESS_ACTION:
                     $inProgressStatus = $this->getDoctrine()
-                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getRepository('AcademicProjectBundle:IssueStatus')
                         ->getInProgressStatus();
+                    $issue->setStatus($inProgressStatus);
+                    $activityLabel = $inProgressStatus->getLabel();
+                    break;
+
+                case self::STOP_PROGRESS_ACTION:
+                    $inProgressStatus = $this->getDoctrine()
+                        ->getRepository('AcademicProjectBundle:IssueStatus')
+                        ->getOpenStatus();
                     $issue->setStatus($inProgressStatus);
                     $activityLabel = $inProgressStatus->getLabel();
                     break;
 
                 case self::CLOSE_ACTION:
                     $closedStatus = $this->getDoctrine()
-                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getRepository('AcademicProjectBundle:IssueStatus')
                         ->getClosedStatus();
                     $issue->setStatus($closedStatus);
                     $activityLabel = $closedStatus->getLabel();
@@ -415,14 +426,14 @@ class IssueController extends Controller
                     break;
                 case self::REOPEN_ACTION:
                     $openStatus = $this->getDoctrine()
-                        ->getRepository('AcademicProjectBundle:Issue')
+                        ->getRepository('AcademicProjectBundle:IssueStatus')
                         ->getOpenStatus();
                     $issue->setStatus($openStatus);
-                    $reopenedResolution = $this->getDoctrine()
-                        ->getRepository('AcademicProjectBundle:Issue')
-                        ->getResolutionReopened();
-                    $issue->setResolution($reopenedResolution);
-                    $activityLabel = $reopenedResolution->getLabel();
+                    $unresolvedResolution = $this->getDoctrine()
+                        ->getRepository('AcademicProjectBundle:IssueResolution')
+                        ->getResolutionUnresolved();
+                    $issue->setResolution($unresolvedResolution);
+                    $activityLabel = 'Reopened';
                     break;
 
                 default:
