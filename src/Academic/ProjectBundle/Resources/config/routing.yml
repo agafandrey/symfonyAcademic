@@ -1,10 +1,12 @@
 academic_project:
     resource: "@AcademicProjectBundle/Controller/ProjectController.php"
     type:     annotation
+    prefix:   project
 
 academic_project_issue:
     resource: "@AcademicProjectBundle/Controller/IssueController.php"
     type:     annotation
+    prefix:   issue
 
 academic_user_index:
     resource: "@AcademicProjectBundle/Controller/UserBundle/IndexController.php"
@@ -13,3 +15,4 @@ academic_user_index:
 academic_user_user:
     resource: "@AcademicProjectBundle/Controller/UserBundle/UserController.php"
     type:     annotation
+    prefix:   user

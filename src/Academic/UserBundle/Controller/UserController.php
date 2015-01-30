@@ -12,10 +12,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class UserController extends Controller
 {
     /**
-     * @Route("/userlist", name="user_list")
+     * @Route("/list", name="user_list")
      * @Template("AcademicUserBundle:User:userlist.html.twig")
      */
-    public function userlistAction(Request $request)
+    public function userListAction(Request $request)
     {
         $user = $this->get('security.context')->getToken()->getUser();
 
@@ -34,10 +34,10 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/usercreate", name="user_create")
+     * @Route("/create", name="user_create")
      * @Template("AcademicUserBundle:User:update.html.twig")
      */
-    public function usercreateAction(Request $request)
+    public function userCreateAction(Request $request)
     {
         $user = new User();
 
@@ -51,7 +51,7 @@ class UserController extends Controller
 
         $form = $this->createFormBuilder($user)
             ->add('username', 'text', array('label' => 'User Name'))
-            ->add('password', 'text', array('label' => 'Password'))
+            ->add('password', 'password', array('label' => 'Password'))
             ->add('fullname', 'text', array('label' => 'Full Name'))
             ->add('file', 'file', array('label' => 'Avatar', 'required' => false))
             ->add('email', 'email', array('label' => 'Email'))
@@ -94,19 +94,19 @@ class UserController extends Controller
                 'The user was saved!'
             );
 
-            return $this->redirect($this->generateUrl('user_profile', array('id' => $user->getId())));
+            return $this->redirect($this->generateUrl('user_profile', array('user' => $user->getId())));
         }
 
         return array('form' => $form->createView());
     }
 
     /**
-     * @Route("/userprofile", name="user_profile")
+     * @Route("/profile/{user}", name="user_profile", defaults={"user"=0})
      * @Template("AcademicUserBundle:User:userprofile.html.twig")
      */
-    public function userprofileAction(Request $request)
+    public function userProfileAction(Request $request)
     {
-        $id = $request->query->get('user');
+        $id = $request->query->get('user') ? $request->query->get('user') : $request->get('user');
         if ($id) {
             $repo = $this->getDoctrine()->getRepository('AcademicUserBundle:User');
             $user = $repo->findOneById($id);
@@ -129,10 +129,10 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/useredit", name="user_edit")
+     * @Route("/edit/{user}", name="user_edit")
      * @Template("AcademicUserBundle:User:update.html.twig")
      */
-    public function usereditAction(Request $request)
+    public function userEditAction(Request $request)
     {
         $currentUser = $this->get('security.context')->getToken()->getUser();
 
@@ -144,7 +144,7 @@ class UserController extends Controller
             return $this->redirect($this->generateUrl('index'));
         }
 
-        $userId = $request->query->get('id');
+        $userId = $request->query->get('user') ? $request->query->get('user') : $request->get('user');
 
         if ($userId) {
             $repo = $this->getDoctrine()->getRepository('AcademicUserBundle:User');
@@ -160,18 +160,22 @@ class UserController extends Controller
             return $this->redirect($this->generateUrl('index'));
         }
 
-        $form = $this->createFormBuilder($user)
+        $formBuilder = $this->createFormBuilder($user)
             ->add('username', 'text', array('label' => 'User Name'))
             ->add('fullname', 'text', array('label' => 'Full Name'))
             ->add('file', 'file', array('label' => 'Avatar', 'required' => false))
             ->add('email', 'email', array('label' => 'Email'))
-            ->add('role', 'entity', array(
+            ->add('timezone', 'timezone');
+
+        if ($currentUser->getRole()->getRole() === 'ROLE_ADMIN') {
+            $formBuilder->add('role', 'entity', array(
                 'class' => 'AcademicUserBundle:Role',
                 'property' => 'name',
-            ))
-            ->add('timezone', 'timezone')
-            ->add('save', 'submit', array('label' => 'Save User'))
-            ->getForm();
+            ));
+        }
+
+        $formBuilder->add('save', 'submit', array('label' => 'Save User'));
+        $form = $formBuilder->getForm();
 
         $form->handleRequest($request);
 
@@ -196,7 +200,7 @@ class UserController extends Controller
                 'The user was saved!'
             );
 
-            return $this->redirect($this->generateUrl('user_profile', array('id' => $user->getId())));
+            return $this->redirect($this->generateUrl('user_profile', array('user' => $user->getId())));
         }
 
         return array('form' => $form->createView());

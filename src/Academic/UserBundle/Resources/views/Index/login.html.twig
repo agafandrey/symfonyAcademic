@@ -1,9 +1,7 @@
 {# src/Academic/UserBundle/Resources/views/Index/login.html.twig #}
 {% extends 'AcademicCoreBundle::layout.html.twig' %}
+{% block title %} Academic Login page {% endblock %}
 {% block body %}
-    {% if error %}
-        <div>{{ error.message }}</div>
-    {% endif %}
 
     <form action="{{ path('login_check') }}" method="post">
         <label for="username">Username:</label>

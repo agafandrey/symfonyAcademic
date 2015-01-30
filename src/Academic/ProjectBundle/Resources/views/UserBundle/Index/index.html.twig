@@ -1,11 +1,6 @@
 {% extends 'AcademicCoreBundle::layout.html.twig' %}
 
 {% block body %}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="flash-notice">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
     <div id="tabs">
         <ul>
             <li><a href="#projects">Projects activities</a></li>

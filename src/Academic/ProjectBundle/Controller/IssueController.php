@@ -26,7 +26,7 @@ class IssueController extends Controller
     const REOPEN_ACTION = 'reopen';
 
     /**
-     * @Route("/issuelist", name="issue_list")
+     * @Route("/list", name="issue_list")
      * @Template
      */
     public function issuelistAction(Request $request)
@@ -41,10 +41,10 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("/issuecreate", name="issue_create")
+     * @Route("/create", name="issue_create")
      * @Template ("AcademicProjectBundle:Issue:update.html.twig")
      */
-    public function issuecreateAction(Request $request)
+    public function issueCreateAction(Request $request)
     {
         $project = $this->getProject($request);
 
@@ -126,7 +126,9 @@ class IssueController extends Controller
             $this->sendActivityEmail($activity);
 
             $this->addCollaborator($issue, $user);
-            $this->addCollaborator($issue, $issue->getAssignee());
+            if ($issue->getAssignee()) {
+                $this->addCollaborator($issue, $issue->getAssignee());
+            }
 
             $request->getSession()->getFlashBag()->add(
                 'notice',
@@ -141,10 +143,10 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("/issueedit", name="issue_edit")
+     * @Route("/edit/{issue}", name="issue_edit")
      * @Template("AcademicProjectBundle:Issue:update.html.twig")
      */
-    public function issueeditAction(Request $request)
+    public function issueEditAction(Request $request)
     {
         $issue = $this->getIssue($request);
 
@@ -154,8 +156,10 @@ class IssueController extends Controller
 
         $project = $issue->getProject();
 
-        if ($issue->getType() === 'STORY') {
-            $typeOptions = $this->prepareTypeOptions($issue->getAvailableTypesSubtask());
+        $typeOptions = array();
+
+        if ($issue->getParentIssue() || $issue->getChildIssues()) {
+            $typeOptions[$issue->getType()] = $issue->getTypeLabel();
         } else {
             $typeOptions = $this->prepareTypeOptions($issue->getAvailableTypes());
         }
@@ -186,7 +190,9 @@ class IssueController extends Controller
 
             $user = $this->get('security.context')->getToken()->getUser();
             $this->addCollaborator($issue, $user);
-            $this->addCollaborator($issue, $issue->getAssignee());
+            if ($issue->getAssignee()) {
+                $this->addCollaborator($issue, $issue->getAssignee());
+            }
 
             $request->getSession()->getFlashBag()->add(
                 'notice',
@@ -200,7 +206,7 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("/issueprofile", name="issue_profile")
+     * @Route("/profile/{issue}", name="issue_profile")
      * @Template
      */
     public function issueprofileAction(Request $request)
@@ -300,7 +306,7 @@ class IssueController extends Controller
     /**
      * @Route("/processcomment", name="process_comment")
      */
-    public function processcommentAction(Request $request)
+    public function processCommentAction(Request $request)
     {
         $error = false;
         $issueId = $request->get('issue');
@@ -372,9 +378,9 @@ class IssueController extends Controller
     }
 
     /**
-     * @Route("/issuestatus", name="issue_status")
+     * @Route("/status/{issue}/{action}", name="issue_status")
      */
-    public function issuestatusAction(Request $request)
+    public function issueStatusAction(Request $request)
     {
         $issue = $this->getIssue($request);
 
@@ -388,7 +394,7 @@ class IssueController extends Controller
             return $this->redirect($this->generateUrl('project_list'));
         }
 
-        $statusAction = $request->query->get('action');
+        $statusAction = $request->get('action');
 
         $activityLabel = '';
         if ($statusAction) {
@@ -474,7 +480,6 @@ class IssueController extends Controller
                     );
 
                 $this->get('mailer')->send($message);
-
             }
         } catch (\Swift_TransportException $e) {
         }

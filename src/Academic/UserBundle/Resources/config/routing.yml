@@ -5,3 +5,4 @@ _login:
 _create_users:
     resource: "@AcademicUserBundle/Controller/UserController.php"
     type:     annotation
+    prefix:   /user

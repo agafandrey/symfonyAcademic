@@ -12,7 +12,7 @@ use Academic\UserBundle\Controller\UserController as BaseUserController;
 class UserController extends BaseUserController
 {
     /**
-     * @Route("/userprofile", name="user_profile")
+     * @Route("/profile/{user}", name="user_profile", defaults={"user"=0})
      * @Template("AcademicProjectBundle:UserBundle\User:userprofile.html.twig")
      */
     public function userprofileAction(Request $request)

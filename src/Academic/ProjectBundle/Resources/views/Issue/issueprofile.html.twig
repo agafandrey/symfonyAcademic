@@ -1,11 +1,6 @@
 {% extends 'AcademicCoreBundle::layout.html.twig' %}
-
+{% block title %} Issue Profile {% endblock %}
 {% block body %}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="flash-notice">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
         <a href="{{ path ('issue_list', { 'project' : project.id }) }}">Project Issues</a>
         <a href="{{ path ('issue_edit', { 'issue' : issue.id }) }}">Edit Issue</a>
     {% if (isStory) %}

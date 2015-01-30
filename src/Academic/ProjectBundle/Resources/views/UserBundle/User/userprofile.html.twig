@@ -1,17 +1,17 @@
 {% extends 'AcademicCoreBundle::layout.html.twig' %}
-
+{% block title %} User Profile {% endblock %}
 {% block body %}
-    {% for flashMessage in app.session.flashbag.get('error') %}
-        <div class="flash-notice">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
     {% if is_edit_granted %}
-        <a href="{{ path ('user_edit', { 'id' : user.id }) }}">Edit Info</a>
+        <a href="{{ path ('user_edit', { 'user' : user.id }) }}">Edit Info</a>
     {% endif %}
     <table>
         <tr>
-            <td>&nbsp;</td><td><img src="{{ asset(user.getAvatarWebPath) }}" /></td>
+            <td>&nbsp;</td>
+            <td>
+                {% if user.getAvatarWebPath() %}
+                    <img src="{{ asset(user.getAvatarWebPath()) }}" />
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <td>Name:</td><td>{{ user.username }}</td>

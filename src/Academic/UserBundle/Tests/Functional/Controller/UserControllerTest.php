@@ -69,7 +69,7 @@ class UserControllerTest extends WebTestCase
         $repo = $this->client->getContainer()->get('doctrine')->getRepository('AcademicUserBundle:User');
         $testUser = $repo->loadUserByUsername('admin');
         $url = $this->client->getContainer()->get('router')
-            ->generate('user_profile', array('id' => $testUser->getId()), false);
+            ->generate('user_profile', array('user' => $testUser->getId()), false);
         $this->client->request('GET', $url);
         $result = $this->client->getResponse();
         $this->assertEquals(
@@ -83,7 +83,7 @@ class UserControllerTest extends WebTestCase
         $repo = $this->client->getContainer()->get('doctrine')->getRepository('AcademicUserBundle:User');
         $testUser = $repo->loadUserByUsername('admin');
         $url = $this->client->getContainer()->get('router')
-            ->generate('user_edit', array('id' => $testUser->getId()), false);
+            ->generate('user_edit', array('user' => $testUser->getId()), false);
         $fileUrl = $this->client->getContainer()->get('router')
                 ->generate('index', array(), false) . 'apple-touch-icon.png';
         $repo = $this->client->getContainer()->get('doctrine')->getRepository('AcademicUserBundle:Role');

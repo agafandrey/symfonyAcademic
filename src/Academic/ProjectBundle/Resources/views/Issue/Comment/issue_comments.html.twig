@@ -1,14 +1,13 @@
 {% block comments %}
-
-    {% if issue.getComments()|length > 0 %}
-        <div class="issue-comments">
-        {% for comment in issue.getComments() %}
-            {{ include('AcademicProjectBundle:Issue/Comment:comment.html.twig', { 'comment': comment }) }}
-        {% endfor %}
-        </div>
-    {% else %}
-        There are no comments yet!
-    {% endif %}
+    <div class="issue-comments">
+        {% if issue.getComments()|length > 0 %}
+            {% for comment in issue.getComments() %}
+                {{ include('AcademicProjectBundle:Issue/Comment:comment.html.twig', { 'comment': comment }) }}
+            {% endfor %}
+        {% else %}
+            <div class="no-comments">There are no comments yet!</div>
+        {% endif %}
+    </div>
     <div class="add-comment">
         <form name="process_comment_new" action="{{ path('process_comment') }}" method="post">
             <p><b>Enter You Comment:</b></p>
@@ -44,6 +43,7 @@
                 postForm( jQuery(this), function( response ){
                     if (response.success){
                         if (response.new){
+                            jQuery('.issue-comments').find('.no-comments').remove();
                             jQuery('.issue-comments').append(response.comment_html);
                             forms.push('[ name="process_comment_' + response.comment_id + '"]');
                             processForms(forms);

@@ -13,26 +13,31 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class ProjectController extends Controller
 {
     /**
-     * @Route("/projectlist", name="project_list")
-     * @Template
+     * @Route("/list", name="project_list")
+     * @Template("AcademicProjectBundle:Project:projectlist.html.twig")
      */
-    public function projectlistAction(Request $request)
+    public function projectListAction(Request $request)
     {
         $project = new Project();
 
         $isCreateGranted = $this->get('security.context')->isGranted('create', $project);
 
         $repo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project');
-        $projects = $repo->findAll();
+        if ($isCreateGranted) {
+            $projects = $repo->findAll();
+        } else {
+            $userId = $this->get('security.context')->getToken()->getUser()->getId();
+            $projects = $repo->getUserProjects($userId);
+        }
 
         return array('projects' => $projects, 'is_create_granted' => $isCreateGranted);
     }
 
     /**
-     * @Route("/projectcreate", name="project_create")
+     * @Route("/create", name="project_create")
      * @Template ("AcademicProjectBundle:Project:update.html.twig")
      */
-    public function projectcreateAction(Request $request)
+    public function projectCreateAction(Request $request)
     {
         $project = new Project();
 
@@ -69,10 +74,10 @@ class ProjectController extends Controller
     }
 
     /**
-     * @Route("/projectedit", name="project_edit")
+     * @Route("/edit/{project}", name="project_edit")
      * @Template("AcademicProjectBundle:Project:update.html.twig")
      */
-    public function projecteditAction(Request $request)
+    public function projectEditAction(Request $request)
     {
         $project = $this->getProjectToEdit($request);
         if (!$project->getId()) {
@@ -104,12 +109,12 @@ class ProjectController extends Controller
     }
 
     /**
-     * @Route("/projectprofile", name="project_profile")
-     * @Template
+     * @Route("/profile/{project}", name="project_profile")
+     * @Template("AcademicProjectBundle:Project:projectprofile.html.twig")
      */
-    public function projectprofileAction(Request $request)
+    public function projectProfileAction(Request $request)
     {
-        $id = $request->query->get('project');
+        $id = $request->query->get('project') ? $request->query->get('project') : $request->get('project');
         if ($id) {
             $repo = $this->getDoctrine()->getRepository('AcademicProjectBundle:Project');
             $project = $repo->findOneById($id);
@@ -137,10 +142,10 @@ class ProjectController extends Controller
     }
 
     /**
-     * @Route("/projectparticipants", name="project_participant")
+     * @Route("/participants", name="project_participant")
      * @Template("AcademicProjectBundle:Project:project_participant.html.twig")
      */
-    public function projectparticipantsAction(Request $request)
+    public function projectParticipantsAction(Request $request)
     {
         $project = $this->getProjectToEdit($request);
         if (!$project->getId()) {
@@ -160,7 +165,7 @@ class ProjectController extends Controller
     /**
      * @Route("/removeparticipant", name="remove_participant")
      */
-    public function removeparticipantAction(Request $request)
+    public function removeParticipantAction(Request $request)
     {
         $participantId = $request->query->get('participant');
         $project = $this->getProjectToEdit($request);
@@ -199,7 +204,7 @@ class ProjectController extends Controller
      * @Route("/chooseparticipant", name="choose_participant")
      * @Template("AcademicProjectBundle:Project:choose_participant.html.twig")
      */
-    public function chooseparticipantAction(Request $request)
+    public function chooseParticipantAction(Request $request)
     {
         $project = $this->getProjectToEdit($request);
         if (!$project) {
@@ -217,7 +222,7 @@ class ProjectController extends Controller
      * @Template("AcademicProjectBundle:Project:assign_participant.html.twig")
      *
      */
-    public function assignparticipantAction(Request $request)
+    public function assignParticipantAction(Request $request)
     {
         $project = $this->getProjectToEdit($request);
         $participants = $request->get('participant');

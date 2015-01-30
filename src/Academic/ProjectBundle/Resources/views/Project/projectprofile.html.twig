@@ -1,11 +1,6 @@
 {% extends 'AcademicCoreBundle::layout.html.twig' %}
-
+{% block title %} Project Profile {% endblock %}
 {% block body %}
-    {% for flashMessage in app.session.flashbag.get('notice') %}
-        <div class="flash-notice">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
     {% if is_edit_granted %}
         <a href="{{ path ('project_edit', { 'project' : project.id }) }}">Edit Info</a>
     {% endif %}
